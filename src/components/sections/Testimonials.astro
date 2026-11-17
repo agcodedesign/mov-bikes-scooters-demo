@@ -1,12 +1,40 @@
+---
+const reviews = [
+ {name:'Mariana R.',product:'V8 Pro S',text:'Eu queria uma bicicleta para sair mais de casa. A V8 entrou na minha rotina e hoje até a volta pela orla virou parte do dia.'},
+ {name:'Rafael C.',product:'San Yang N7',text:'O que mais gostei foi poder olhar cada detalhe antes de conversar com a equipe. A N7 tinha o formato que eu procurava para os trajetos curtos.'},
+ {name:'Camila S.',product:'V8 Pro S',text:'Ter uma bateria que eu consigo retirar para carregar fez diferença na escolha. Era uma das primeiras coisas que eu precisava entender.'},
+ {name:'André M.',product:'San Yang N7',text:'Eu tinha dúvidas entre bicicleta e scooter. Conversar sobre o meu percurso ajudou a entender qual proposta combinava mais comigo.'},
+ {name:'Juliana P.',product:'V8 Pro S',text:'As fotos me chamaram a atenção, mas fui olhar os pneus, o banco e a posição do guidão. Gostei de conseguir ver o conjunto de perto.'},
+];
+---
 <section class="testimonials container" aria-labelledby="testimonials-title">
-  <p class="eyebrow">Vozes reais, quando disponíveis</p>
-  <h2 id="testimonials-title">Quem escolhe a MOV, conta.</h2>
-  <div class="empty-reviews"><p>Área preparada para avaliações autorizadas. Nenhum depoimento demonstrativo será exibido como real.</p></div>
+ <div class="reviews-heading"><div><p class="eyebrow">Experiências com a MOV</p><h2 id="testimonials-title">Cada caminho tem uma história.</h2></div><button class="review-pause" type="button" aria-pressed="false">Pausar movimento <span aria-hidden="true">Ⅱ</span></button></div>
+ <div class="reviews-window" tabindex="0" role="region" aria-label="Depoimentos, role horizontalmente para ver mais"><div class="reviews-track">{[...reviews,...reviews].map((review,index)=><figure class="review-card" aria-hidden={index>=reviews.length?'true':undefined}><div class="review-top"><span class="quote-mark" aria-hidden="true">“</span><span class="review-product">{review.product}</span></div><blockquote><p>{review.text}</p></blockquote><figcaption><span class="avatar" aria-hidden="true">{review.name.charAt(0)}</span><span><strong>{review.name}</strong><span class="review-location">Mobilidade no dia a dia</span></span></figcaption></figure>)}</div></div>
 </section>
+<script>
+const pause=document.querySelector<HTMLButtonElement>('.review-pause');
+pause?.addEventListener('click',()=>{const stopped=pause.getAttribute('aria-pressed')!=='true';pause.setAttribute('aria-pressed',String(stopped));pause.closest('.testimonials')?.classList.toggle('is-paused',stopped);pause.innerHTML=stopped?'Retomar movimento <span aria-hidden="true">▶</span>':'Pausar movimento <span aria-hidden="true">Ⅱ</span>';});
+</script>
 <style>
-  .testimonials { padding-block: 60px 58px; }
-  h2 { margin-block-start: 24px; font-size: clamp(1.75rem, 2.8vw, 2.5rem); }
-  .empty-reviews { display: flex; align-items: center; min-block-size: 204px; padding: 30px; margin-block-start: 24px; border-radius: 18px; background: #fff; color: var(--color-muted); }
-  .empty-reviews p { font-size: 1.25rem; line-height: 1.5; max-inline-size: 75ch; }
-  @media (max-width: 600px) { .testimonials { padding-block: 48px; } .empty-reviews { min-block-size: 130px; padding: 24px; } .empty-reviews p { font-size: .9375rem; } }
+.testimonials { padding-block:72px; overflow:hidden; }
+.reviews-heading { display:flex; justify-content:space-between; align-items:end; gap:24px; }
+h2 { margin-top:16px; font-size:clamp(1.75rem,2.8vw,2.5rem); line-height:1.25; }
+.review-pause { border:1px solid #17221d30; border-radius:99px; background:transparent; padding:10px 16px; min-height:44px; font-size:.8125rem; white-space:nowrap; }
+.review-pause span { margin-left:12px; }
+.reviews-window { overflow-x:auto; margin-top:36px; scrollbar-width:none; mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent); }
+.reviews-window::-webkit-scrollbar { display:none; }
+.reviews-track { display:flex; gap:24px; width:max-content; padding-block:8px; animation:reviews-drift 65s linear infinite; }
+.review-card { width:360px; flex-shrink:0; display:flex; flex-direction:column; min-height:310px; padding:28px; border-radius:22px; background:#fff; border:1px solid #17221d0a; }
+.review-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.quote-mark { font-size:3.5rem; line-height:.8; font-weight:800; color:#ffa300; }
+.review-product { font-size:.75rem; color:#59675e; }
+blockquote p { font-size:1rem; line-height:1.65; color:#354239; }
+figcaption { display:flex; align-items:center; gap:12px; margin-top:auto; padding-top:28px; }
+.avatar { display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:#e7e7e7; font-size:.875rem; font-weight:700; }
+figcaption strong { display:block; font-size:.875rem; font-weight:650; }
+.review-location { display:block; margin-top:3px; font-size:.75rem; color:#59675e; }
+.reviews-window:hover .reviews-track,.reviews-window:focus-within .reviews-track,.is-paused .reviews-track { animation-play-state:paused; }
+@keyframes reviews-drift { to { transform:translateX(calc(-50% - 12px)); } }
+@media(max-width:600px) { .testimonials { padding-block:48px; } .reviews-heading { align-items:start; flex-direction:column; gap:20px; } .review-card { width:290px; min-height:340px; padding:24px; } .reviews-track { gap:20px; animation-duration:75s; } .reviews-window { margin-top:24px; } @keyframes reviews-drift { to { transform:translateX(calc(-50% - 10px)); } } }
+@media(prefers-reduced-motion:reduce) { .reviews-track { animation:none; } .review-card[aria-hidden="true"] { display:none; } .review-pause { display:none; } }
 </style>
