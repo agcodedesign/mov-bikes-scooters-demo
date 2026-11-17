@@ -1,0 +1,57 @@
+---
+import ResponsiveImage from '../ui/ResponsiveImage.astro';
+---
+
+<section id="a-mov" class="brand container" aria-labelledby="brand-title">
+  <p class="eyebrow">MAIS LIBERDADE NO SEU DIA.</p>
+  <h2 id="brand-title">O caminho muda quando você escolhe como ir.</h2>
+  <div class="brand-grid">
+    <div class="brand-photo">
+      <ResponsiveImage src="/images/products/mov-scooter-vista-geral" widths={[640, 960, 1280]} width={1376} height={768} alt="Scooter elétrica MOV vista de perfil" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 55vw, 740px" />
+    </div>
+    <div class="brand-story">
+      <p class="brand-description">A MOV aproxima você de uma mobilidade mais prática, moderna e conectada com o seu estilo de vida.</p>
+      <div class="brand-quote">
+        <ResponsiveImage src="/images/products/mov-v8-pro-s-frontal" widths={[640, 960, 1280]} width={2049} height={1713} alt="Detalhe frontal da bicicleta elétrica V8 Pro S" sizes="(max-width: 767px) calc(100vw - 40px), 524px" />
+        <p>“Mais liberdade para escolher como a cidade acontece.”</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .brand { padding-top: 82px; }
+  .brand > .eyebrow { margin: 0 0 19px; }
+  .brand h2 { max-width: 590px; margin: 0 0 8px; }
+  .brand-grid { display: grid; grid-template-columns: minmax(0,740fr) minmax(0,524fr); gap: 32px; align-items: start; }
+  .brand-photo, .brand-quote { position: relative; overflow: hidden; border-radius: var(--radius-card); }
+  .brand-photo { height: 430px; }
+  .brand-photo :global(img), .brand-quote :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .brand-story { min-width: 0; }
+  .brand-description { margin: 0 0 32px; color: var(--color-muted); font-size: 1.3125rem; line-height: 1.4; }
+  .brand-quote { min-height: 340px; padding: 30px; display: flex; align-items: flex-end; }
+  .brand-quote :global(img) { position: absolute; inset: 0; }
+  .brand-quote::after { position: absolute; inset: 0; content: ''; background: linear-gradient(0deg, rgb(23 34 29 / 68%), rgb(23 34 29 / 0%) 90%), linear-gradient(0deg, rgb(255 163 0 / 90%), rgb(255 163 0 / 0%) 80%); }
+  .brand-quote p { position: relative; z-index: 1; max-width: 280px; margin: 100px 0 0; color: var(--color-bg); font-size: 2rem; font-weight: 800; line-height: 1.2; }
+  @media (min-width: 768px) and (max-width: 1100px) {
+    .brand h2 { max-width: 580px; margin-bottom: 24px; }
+    .brand-photo { height: 430px; }
+    .brand-description { font-size: 1.125rem; margin-bottom: 24px; }
+    .brand-quote { min-height: 320px; padding: 24px; }
+    .brand-quote p { font-size: 1.75rem; }
+  }
+  @media (max-width: 899px) {
+    .brand { padding-top: 56px; }
+    .brand h2 { margin-bottom: 24px; }
+    .brand-grid { display: contents; }
+    .brand-story { display: contents; }
+    .brand-description { margin: 0 0 24px; font-size: 1.125rem; line-height: 1.5; }
+    .brand-photo { height: auto; aspect-ratio: 1.72; margin-bottom: 24px; }
+    .brand-quote { min-height: 260px; padding: 24px; }
+    .brand-quote p { max-width: 280px; font-size: clamp(1.625rem, 7vw, 2rem); }
+    .brand { display: flex; flex-direction: column; }
+    .brand-description { order: 1; }
+    .brand-photo { order: 2; }
+    .brand-quote { order: 3; }
+  }
+</style>

@@ -1,0 +1,69 @@
+---
+import ResponsiveImage from '../ui/ResponsiveImage.astro';
+import Button from '../ui/Button.astro';
+---
+
+<section id="bicicletas" class="experience container" aria-labelledby="experience-title">
+  <h2 id="experience-title">Uma nova rotina começa no caminho.</h2>
+  <div class="experience-grid">
+    <div class="experience-main-image">
+      <ResponsiveImage src="/images/lifestyle/mov-bicicleta-parque" widths={[640, 960, 1280]} width={2400} height={1792} alt="Bicicleta elétrica MOV em um parque" sizes="(max-width: 767px) calc(100vw - 40px), 590px" />
+    </div>
+    <div class="experience-details">
+      <div class="experience-category">
+        <h3>Bicicletas elétricas</h3>
+        <p class="category-description">Conheça os modelos, compare os componentes e encontre uma bicicleta para os seus trajetos.</p>
+        <Button href="/catalogo/?categoria=bicicleta#modelos" variant="text" label="Explorar categoria de bicicletas elétricas">Explorar categoria <span aria-hidden="true">→</span></Button>
+      </div>
+      <div class="experience-bottom">
+        <div class="experience-message"><p>Seu ritmo.<br />Sua escolha.</p><p class="message-description">Do primeiro olhar aos detalhes que fazem diferença no uso diário.</p></div>
+        <div class="experience-detail-image">
+          <ResponsiveImage src="/images/products/mov-bicicleta-vista-superior" widths={[640, 960, 1280]} width={1376} height={768} alt="Bicicleta elétrica MOV vista de cima" sizes="(max-width: 767px) calc(100vw - 40px), 338px" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience { padding-top: 90px; }
+  .experience h2 { margin: 0 0 32px; font-size: 2.5rem; }
+  .experience-grid { display: grid; grid-template-columns: minmax(0,590fr) minmax(0,678fr); gap: 28px; }
+  .experience-main-image, .experience-detail-image { overflow: hidden; border-radius: var(--radius-card); }
+  .experience-main-image { height: 400px; }
+  .experience-main-image :global(img), .experience-detail-image :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .experience-details { display: grid; grid-template-rows: minmax(188px, auto) minmax(192px, auto); gap: 20px; min-width: 0; }
+  .experience-category { padding: 36px 38px; border-radius: var(--radius-card); background: var(--color-accent); }
+  .experience-category h3 { margin: 0 0 12px; font-size: 2rem; font-weight: 800; line-height: 1.25; }
+  .experience-bottom { display: grid; grid-template-columns: minmax(0,320fr) minmax(0,338fr); gap: 20px; min-height: 0; }
+  .experience-message { padding: 28px 30px; border-radius: var(--radius-card); background: var(--color-ink); color: #fff; }
+  .experience-message p { margin: 0; font-size: 1.8125rem; font-weight: 700; line-height: 1.2; }
+  @media (min-width: 768px) and (max-width: 1100px) {
+    .experience-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+    .experience-category { padding: 28px; }
+    .experience-category h3 { font-size: 1.75rem; }
+    .experience-message { padding: 24px 20px; }
+    .experience-message p { font-size: 1.5625rem; }
+  }
+  @media (max-width: 899px) {
+    .experience { padding-top: 56px; }
+    .experience h2 { margin-bottom: 24px; font-size: 1.875rem; }
+    .experience-grid { grid-template-columns: 1fr; gap: 20px; }
+    .experience-main-image { height: auto; aspect-ratio: 1.475; }
+    .experience-details { grid-template-rows: auto auto; }
+    .experience-category { padding: 30px 24px; }
+    .experience-category h3 { font-size: 1.75rem; }
+    .experience-bottom { grid-template-columns: 1fr; }
+    .experience-message { padding: 30px 24px; }
+    .experience-detail-image { aspect-ratio: 1.76; }
+  }
+
+  .experience-category { display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end; gap:12px; }
+  .experience-category h3 { margin:0; font-size:clamp(1.5rem,2vw,1.875rem); }
+  .category-description { max-width:52ch; font-size:.9375rem; line-height:1.5; }
+  .experience-category :global(.button) { margin-top:4px; padding-block:8px; }
+  .experience-message { display:flex; flex-direction:column; justify-content:flex-end; gap:16px; }
+  .experience-message > p:first-child { font-size:clamp(1.5rem,2vw,1.875rem); line-height:1.25; }
+  .experience-message .message-description { font-size:.875rem; font-weight:400; line-height:1.5; color:#c8d1ca; max-width:30ch; }
+  @media(max-width:899px) { .experience-category { min-height:220px; } .experience-message { min-height:220px; } }
+</style>

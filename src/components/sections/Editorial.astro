@@ -1,0 +1,43 @@
+---
+import ResponsiveImage from '../ui/ResponsiveImage.astro';
+import Button from '../ui/Button.astro';
+---
+
+<section id="scooters" class="editorial container" aria-labelledby="editorial-title">
+  <div class="editorial-image">
+    <ResponsiveImage src="/images/editorial/mov-scooter-orla-anoitecer" widths={[640, 960, 1280]} width={1376} height={768} alt="Scooter elétrica MOV na orla ao anoitecer" sizes="(max-width: 899px) calc(100vw - 80px), 684px" />
+  </div>
+  <div class="editorial-panel">
+    <div class="editorial-copy">
+      <p class="eyebrow">A CIDADE, DO SEU JEITO.</p>
+      <h2 id="editorial-title">Mais do que chegar.<br />Aproveitar o caminho.</h2>
+      <p class="editorial-description">Uma forma diferente de viver a cidade, com mais praticidade e liberdade para seus deslocamentos.</p>
+      <Button href="/catalogo/?categoria=scooter#modelos">Conhecer modelos</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .editorial { display: grid; grid-template-columns: minmax(0,760fr) minmax(0,680fr); margin-top: 80px; border-radius: var(--radius-card); overflow: hidden; }
+  .editorial-image { min-width: 0; height: 610px; overflow: hidden; }
+  .editorial-image :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .editorial-panel { display: flex; align-items: center; padding: 60px; background: #e7e7e7; }
+  .editorial-copy { width: 100%; max-width: 454px; }
+  .editorial-copy .eyebrow { margin: 0 0 30px; }
+  .editorial-copy h2 { margin: 0 0 24px; }
+  .editorial-description { margin: 0 0 64px; color: var(--color-muted); font-size: 1.1875rem; line-height: 1.5; }
+  @media (min-width: 768px) and (max-width: 1100px) {
+    .editorial-panel { padding: 40px; }
+    .editorial-copy h2 { font-size: 2.125rem; }
+    .editorial-description { margin-bottom: 36px; }
+  }
+  @media (max-width: 899px) {
+    .editorial { grid-template-columns: 1fr; margin-top: 48px; }
+    .editorial-image { height: auto; aspect-ratio: 1.4; }
+    .editorial-panel { padding: 40px var(--gutter); }
+    .editorial-copy { max-width: none; }
+    .editorial-copy .eyebrow { margin-bottom: 20px; }
+    .editorial-copy h2 { margin-bottom: 20px; }
+    .editorial-description { margin-bottom: 28px; font-size: 1.125rem; line-height: 1.5; }
+  }
+</style>

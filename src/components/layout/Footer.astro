@@ -1,0 +1,47 @@
+---
+import Button from '../ui/Button.astro';
+import { site } from '../../config/site';
+const isHome = Astro.url.pathname === '/';
+const homeHref = (hash: string) => isHome ? hash : `/${hash}`;
+---
+<footer class="footer" id="contato">
+  <div class="footer-inner">
+    <div class="footer-intro">
+      <a class="footer-logo" href={isHome ? '#inicio' : '/'} aria-label="MOV, voltar ao início"><img src="/images/brand/mov-logo-simbolo.webp" width="871" height="283" alt="MOV" loading="lazy" /></a>
+      <h2>Conecte-se com o seu próximo caminho.</h2>
+      <p>Explore bicicletas e scooters elétricas e descubra uma nova forma de se movimentar, com mais liberdade para escolher o seu caminho.</p>
+      <Button href={'/catalogo/'}>Explorar catálogo <span aria-hidden="true">→</span></Button>
+    </div>
+    <div class="footer-links">
+    <nav class="footer-nav" aria-label="Navegação do rodapé">
+      <div><h3>Explore</h3><a href={'/catalogo/'}>Catálogo</a><a href={'/catalogo/?categoria=bicicleta#modelos'}>Bicicletas elétricas</a><a href={'/catalogo/?categoria=scooter#modelos'}>Scooters elétricas</a></div>
+      <div><h3>MOV</h3><a href="/sobre/">Sobre a MOV</a><Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'} variant="text">Fale com a equipe</Button><Button href={site.instagram} dialog={site.instagram ? undefined : 'redes'} variant="text">Instagram</Button></div>
+      <div><h3>Informações</h3><Button dialog="privacidade" variant="text">Privacidade</Button><p class="copyright">© MOV</p></div>
+    </nav>
+    <a class="agency-credit" href="https://agcodedesign.netlify.app" target="_blank" rel="noopener noreferrer" aria-label="Site da AG Code & Design (abre em nova aba)">
+      <img src="/images/brand/ag-code-design-176.webp" srcset="/images/brand/ag-code-design-176.webp 2x, /images/brand/ag-code-design-264.webp 3x" width="598" height="204" alt="AG Code & Design" loading="lazy" decoding="async" />
+    </a>
+    </div>
+  </div>
+</footer>
+<style>
+  .footer { padding: 30px 40px 70px; }
+  .footer-inner { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 550px); gap: 80px; max-inline-size: 1600px; margin-inline: auto; }
+  .footer-intro { min-inline-size: 0; }
+  .footer-links { display: flex; flex-direction: column; justify-content: space-between; gap: 32px; min-inline-size: 0; }
+  .agency-credit { display: inline-flex; align-items: center; justify-content: center; align-self: flex-end; min-block-size: 44px; opacity: .7; }
+  .agency-credit img { inline-size: 88px; block-size: auto; }
+  .agency-credit:hover, .agency-credit:focus-visible { opacity: 1; }
+  .footer-logo { display: block; inline-size: min(100%, 510px); margin-block-end: 14px; }
+  .footer-logo img { inline-size: 100%; }
+  h2 { font-size: 1.5625rem; font-weight: 800; line-height: 1.25; letter-spacing: -.015em; max-inline-size: 550px; }
+  .footer-intro > p { color: var(--color-muted); font-size: .875rem; line-height: 1.5; max-inline-size: 470px; margin-block: 20px 26px; }
+  .footer-intro :global(.button) { min-block-size: 46px; font-size: .8125rem; padding-inline: 26px; }
+  .footer-nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; padding-block-start: 96px; }
+  h3 { color: var(--color-eyebrow); text-transform: uppercase; font-size: .75rem; font-weight: 700; margin-block-end: 16px; }
+  .footer-nav a, .footer-nav :global(.button), .copyright { display: flex; align-items: center; min-block-size: 32px; color: var(--color-ink); font-size: .875rem; line-height: 1.4; font-weight: 600; text-decoration: none; text-align: start; padding: 4px 0; justify-content: start; }
+  .footer-nav a:hover, .footer-nav :global(.button:hover) { text-decoration: underline; }
+  @media (max-width: 1099px) { .footer { padding-inline: var(--gutter); } .footer-inner { grid-template-columns: minmax(0,1fr); gap: 40px; } .footer-logo { max-inline-size: 420px; } .footer-nav { padding-block-start: 0; max-inline-size: 700px; } }
+  @media (max-width: 600px) { .footer { padding-block: 28px 48px; } .footer-logo { inline-size: min(100%, 350px); } h2 { font-size: 1.375rem; } .footer-intro > p { font-size: .9375rem; } .footer-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; } .footer-nav a, .footer-nav :global(.button) { min-block-size: 44px; } .footer-nav > div:last-child { grid-column: 1 / -1; } }
+  @media (max-width: 600px) { .footer-links { gap: 24px; } .agency-credit img { inline-size: 72px; } }
+</style>

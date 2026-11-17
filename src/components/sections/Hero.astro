@@ -1,0 +1,199 @@
+---
+import Button from '../ui/Button.astro';
+import { site } from '../../config/site';
+const slides = [
+  { src: 'mov-mobilidade-orla', alt: 'Uma mulher percorre a ciclovia da orla em um veículo elétrico MOV.', widths: [768,1280,1920,2560], position: '80% center' },
+  { src: 'mov-ciclista-orla', alt: 'Um ciclista com capacete percorre a orla em uma bicicleta elétrica MOV.', widths: [768,1280,1920], position: '78% center' },
+  { src: 'mov-scooter-cidade', alt: 'Um condutor com capacete utiliza uma scooter elétrica em uma rua urbana.', widths: [768,1280,1920], position: '75% center' },
+];
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero-inner">
+    <div class="hero-content">
+      <div class="hero-accent" aria-hidden="true"></div>
+      <p class="hero-eyebrow">Mobilidade para o seu dia.</p>
+      <h1 id="hero-title"><span><span>Sua cidade.</span></span><span><span>Seu ritmo.</span></span><span><span>Seu caminho.</span></span></h1>
+      <p class="hero-description">Descubra uma nova maneira de se movimentar com bicicletas e scooters elétricas pensadas para acompanhar sua rotina.</p>
+      <div class="hero-actions">
+        <Button href="/catalogo/">Explorar modelos</Button>
+        <Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'} variant="text">Falar com a equipe <span aria-hidden="true">→</span></Button>
+      </div>
+    </div>
+  </div>
+  <div class="hero-media" aria-label="Imagens da mobilidade MOV" aria-roledescription="carrossel" role="region">
+    {slides.map((slide, index) => <div class:list={['hero-slide', { 'is-active': index === 0 }]} aria-hidden={index !== 0} role="group" aria-roledescription="slide" aria-label={`${index + 1} de ${slides.length}`} style={`--slide-position: ${slide.position}`}>
+      <picture>
+        <source media="(max-width: 600px)" srcset={[480,768,941].map(width => `/images/hero/${slide.src}-mobile-v1-${width}.webp ${width}w`).join(', ')} sizes="100vw" width="941" height="1672" />
+        <source media="(min-width: 601px)" srcset={[1280,1920,2089].map(width => `/images/hero/${slide.src}-ultrawide-v1-${width}.webp ${width}w`).join(', ')} sizes="100vw" width="2089" height="753" />
+        <img src={`/images/hero/${slide.src}-1920.webp`} srcset={slide.widths.map(width => `/images/hero/${slide.src}-${width}.webp ${width}w`).join(', ')} sizes="100vw" width="2752" height="1536" alt={slide.alt} fetchpriority={index === 0 ? 'high' : 'low'} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" />
+      </picture>
+    </div>)}
+  </div>
+  <div class="hero-controls" hidden>
+    <div class="hero-dots" aria-label="Selecionar imagem">
+      {slides.map((_, index) => <button type="button" data-slide={index} aria-label={`Mostrar imagem ${index + 1}`} aria-current={index === 0 ? 'true' : undefined}><span></span></button>)}
+    </div>
+    <button type="button" data-pause aria-label="Pausar imagens"><span aria-hidden="true">Ⅱ</span></button>
+  </div>
+</section>
+<script>
+  const hero = document.querySelector<HTMLElement>('.hero');
+  if (hero) {
+    const frames = [...hero.querySelectorAll<HTMLElement>('.hero-slide')];
+    const dots = [...hero.querySelectorAll<HTMLButtonElement>('[data-slide]')];
+    const controls = hero.querySelector<HTMLElement>('.hero-controls')!;
+    const pause = hero.querySelector<HTMLButtonElement>('[data-pause]')!;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    let index = 0;
+    let paused = reduced.matches;
+    let dragging = false;
+    let visible = true;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const schedule = () => {
+      clearTimeout(timer);
+      if (!paused && !dragging && visible && !document.hidden && document.documentElement.dataset.movIntro !== 'loading' && !hero.contains(document.activeElement)) {
+        timer = setTimeout(() => show(index + 1), 5000);
+      }
+    };
+    const show = (next: number) => {
+      const previous = index;
+      hero.style.setProperty('--wipe-from', next < index ? 'inset(0 100% 0 0)' : 'inset(0 0 0 100%)');
+      index = (next + frames.length) % frames.length;
+      frames.forEach((frame, i) => { frame.classList.toggle('is-active', i === index); frame.classList.toggle('is-previous', i === previous && previous !== index); frame.setAttribute('aria-hidden', String(i !== index)); });
+      dots.forEach((dot, i) => { if (i === index) dot.setAttribute('aria-current', 'true'); else dot.removeAttribute('aria-current'); });
+      schedule();
+    };
+    const updatePause = () => {
+      pause.setAttribute('aria-label', paused ? 'Reproduzir imagens' : 'Pausar imagens');
+      pause.querySelector('span')!.textContent = paused ? '▶' : 'Ⅱ';
+      schedule();
+    };
+    dots.forEach((dot, i) => dot.addEventListener('click', () => show(i)));
+    pause.addEventListener('click', () => { paused = !paused; updatePause(); });
+    hero.addEventListener('focusin', schedule);
+    hero.addEventListener('focusout', () => queueMicrotask(schedule));
+    document.addEventListener('visibilitychange', schedule);
+    document.addEventListener('mov:intro-ready', schedule, { once: true });
+    reduced.addEventListener('change', () => { paused = reduced.matches; updatePause(); });
+    const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; schedule(); });
+    observer.observe(hero);
+    let start: { x: number; y: number; id: number } | undefined;
+    let moved = false;
+    let dragFrame = 0;
+    let dragShift = 0;
+    const settleDrag = () => {
+      cancelAnimationFrame(dragFrame);
+      dragFrame = 0;
+      hero.style.removeProperty('--drag-shift');
+      hero.classList.remove('is-dragging');
+    };
+    hero.addEventListener('dragstart', event => event.preventDefault());
+    hero.addEventListener('pointerdown', event => {
+      if (!event.isPrimary || event.button !== 0 || (event.target as Element).closest('a,button,input')) return;
+      start = { x: event.clientX, y: event.clientY, id: event.pointerId };
+      dragging = true;
+      moved = false;
+      hero.setPointerCapture(event.pointerId);
+      hero.classList.add('is-dragging');
+      schedule();
+    });
+    hero.addEventListener('pointermove', event => {
+      if (!start || event.pointerId !== start.id) return;
+      const dx = event.clientX - start.x;
+      if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(event.clientY - start.y)) {
+        moved = true;
+        if (!reduced.matches) {
+          dragShift = Math.max(-24, Math.min(24, dx * .1));
+          if (!dragFrame) dragFrame = requestAnimationFrame(() => {
+            hero.style.setProperty('--drag-shift', `${dragShift}px`);
+            dragFrame = 0;
+          });
+        }
+      }
+    });
+    const endDrag = (event: PointerEvent, cancelled = false) => {
+      if (!start || event.pointerId !== start.id) return;
+      const dx = event.clientX - start.x;
+      const dy = event.clientY - start.y;
+      if (!cancelled && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.25) show(index + (dx < 0 ? 1 : -1));
+      if (hero.hasPointerCapture(event.pointerId)) hero.releasePointerCapture(event.pointerId);
+      start = undefined;
+      dragging = false;
+      settleDrag();
+      schedule();
+    };
+    hero.addEventListener('pointerup', event => endDrag(event));
+    hero.addEventListener('pointercancel', event => endDrag(event, true));
+    hero.addEventListener('lostpointercapture', () => { start = undefined; dragging = false; settleDrag(); schedule(); });
+    hero.addEventListener('click', event => { if (moved) { event.preventDefault(); moved = false; } }, true);
+    window.addEventListener('pagehide', () => { clearTimeout(timer); observer.disconnect(); settleDrag(); });
+    window.addEventListener('pageshow', () => { observer.observe(hero); schedule(); });
+    controls.hidden = false;
+    updatePause();
+  }
+</script>
+<style>
+  .hero { position: relative; isolation: isolate; background: var(--color-ink); color: var(--color-bg); touch-action: pan-y pinch-zoom; cursor: grab; }
+  .hero.is-dragging { cursor: grabbing; user-select: none; }
+  .hero-media { position: absolute; inset: 0; z-index: -2; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-slide picture { transition: translate 360ms cubic-bezier(.2,.8,.2,1); }
+    .hero-slide.is-active picture { translate: var(--drag-shift, 0px) 0; }
+    .hero.is-dragging .hero-slide.is-active picture { transition: none; will-change: translate; }
+  }
+  .hero-slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+  .hero-slide.is-active { opacity: 1; pointer-events: auto; z-index: 1; }
+  .hero-slide.is-previous { opacity: 1; }
+  .hero-slide picture { display: block; block-size: 100%; }
+  .hero-controls { position: absolute; left: 50%; transform: translateX(-50%); inset-block-end: 20px; z-index: 3; display: flex; align-items: center; gap: 8px; color: #fff; }
+  .hero-controls button { display: grid; place-items: center; min-inline-size: 32px; min-block-size: 44px; padding: 0; border: 0; border-radius: 50%; background: transparent; color: inherit; font-size: .875rem; }
+  .hero-controls button:hover span { opacity: .75; }
+  .hero-controls [data-pause] { inline-size: 32px; min-block-size: 32px; background: rgb(23 34 29 / .7); }
+  .hero-dots { display: flex; }
+  .hero-dots button { min-inline-size: 32px; }
+  .hero-dots span { inline-size: 20px; block-size: 7px; transform: scaleX(.35); border-radius: 999px; background: #fff; box-shadow: 0 1px 5px #0009; }
+  .hero-dots [aria-current="true"] span { transform: scaleX(1); background: var(--color-accent); }
+  @media (prefers-reduced-motion: no-preference) { .hero-dots span { transition: transform 320ms cubic-bezier(.2,.8,.2,1), background-color 180ms ease; } }
+  @media (prefers-reduced-motion: no-preference) { .hero-slide { transition: opacity 700ms ease; } }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-slide.is-active { animation: hero-frame-reveal 1200ms cubic-bezier(.76,0,.24,1) both; }
+    @keyframes hero-frame-reveal { from { clip-path: var(--wipe-from, inset(0 0 0 100%)); } to { clip-path: inset(0 0 0 0); } }
+  }
+  .hero-media img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: center; }
+  @media (min-width: 601px) { .hero-media img { object-position: right center; } }
+  .hero::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #17221d 0%, rgb(23 34 29 / .48) 52%, transparent 100%); pointer-events: none; }
+  .hero-inner { min-block-size: 690px; display: flex; align-items: center; padding-block: 72px; }
+  .hero-content { max-inline-size: 530px; }
+  .hero-accent { inline-size: 92px; block-size: 5px; margin-block-end: 20px; background: var(--color-accent); }
+  .hero-eyebrow { font-size: .9375rem; font-weight: 700; text-transform: uppercase; color: var(--color-gray); margin-block-end: 8px; }
+  h1 { font-size: clamp(3rem, 4.87vw, 4.375rem); font-weight: 800; line-height: 1.2; letter-spacing: -.025em; }
+  h1 > span { display: block; overflow: clip; }
+  h1 > span > span { display: block; transform-origin: left bottom; }
+  .hero-description { font-size: 1.25rem; line-height: 1.3; color: var(--color-gray); max-inline-size: 450px; margin-block-start: 12px; }
+  .hero-actions { display: flex; align-items: center; gap: 30px; flex-wrap: wrap; margin-block-start: 20px; }
+  .hero-actions :global(.button) { min-block-size: 54px; font-size: 1.125rem; }
+  @media (min-width: 601px) and (max-width: 1099px) {
+    .hero-inner { min-block-size: 580px; padding-block: 48px; }
+    .hero-content { max-inline-size: 460px; }
+    h1 { font-size: 3rem; }
+    .hero-description { font-size: 1.0625rem; max-inline-size: 350px; line-height: 1.5; }
+    .hero-actions { gap: 16px; }
+    .hero-actions :global(.button) { font-size: .9375rem; }
+    .hero::after { background: linear-gradient(90deg, rgb(23 34 29 / .95), rgb(23 34 29 / .65) 50%, rgb(23 34 29 / .08)); }
+  }
+  @media (max-width: 600px) {
+    .hero { background: var(--color-ink); padding-block-end: 0; }
+    .hero-media { position: absolute; inset: 0; block-size: 100%; z-index: -2; }
+    .hero-media img { object-position: center; }
+    .hero-inner { display: block; min-block-size: max(760px, 178vw); padding-block: 36px 340px; }
+    .hero::after { display: block; background: linear-gradient(180deg, rgb(15 22 20 / .94) 0%, rgb(15 22 20 / .84) 22%, rgb(15 22 20 / .68) 40%, rgb(15 22 20 / .36) 55%, rgb(15 22 20 / .08) 72%, transparent 86%), linear-gradient(0deg, rgb(15 22 20 / .24), transparent 18%); }
+    .hero-content h1, .hero-description, .hero-eyebrow { text-shadow: 0 2px 16px rgb(0 0 0 / .16); }
+    .hero-content { max-inline-size: none; }
+    .hero-accent { inline-size: 64px; block-size: 4px; margin-block-end: 16px; }
+    .hero-eyebrow { font-size: .75rem; }
+    h1 { font-size: clamp(2.5rem, 10.8vw, 3.125rem); }
+    .hero-description { font-size: 1rem; line-height: 1.5; margin-block-start: 18px; }
+    .hero-actions { gap: 8px; margin-block-start: 24px; align-items: stretch; }
+    .hero-actions :global(.button) { font-size: .9375rem; min-block-size: 48px; }
+  }
+</style>

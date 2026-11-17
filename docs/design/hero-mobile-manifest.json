@@ -1,0 +1,77 @@
+[
+  {
+    "source": "assets/source/hero-mobile/mov-ciclista-orla-mobile-v1.png",
+    "width": 941,
+    "height": 1672,
+    "outputs": [
+      {
+        "file": "public/images/hero/mov-ciclista-orla-mobile-v1-480.webp",
+        "width": 480,
+        "height": 853,
+        "bytes": 63940
+      },
+      {
+        "file": "public/images/hero/mov-ciclista-orla-mobile-v1-768.webp",
+        "width": 768,
+        "height": 1365,
+        "bytes": 127750
+      },
+      {
+        "file": "public/images/hero/mov-ciclista-orla-mobile-v1-941.webp",
+        "width": 941,
+        "height": 1672,
+        "bytes": 166126
+      }
+    ]
+  },
+  {
+    "source": "assets/source/hero-mobile/mov-scooter-cidade-mobile-v1.png",
+    "width": 941,
+    "height": 1672,
+    "outputs": [
+      {
+        "file": "public/images/hero/mov-scooter-cidade-mobile-v1-480.webp",
+        "width": 480,
+        "height": 853,
+        "bytes": 61306
+      },
+      {
+        "file": "public/images/hero/mov-scooter-cidade-mobile-v1-768.webp",
+        "width": 768,
+        "height": 1365,
+        "bytes": 144954
+      },
+      {
+        "file": "public/images/hero/mov-scooter-cidade-mobile-v1-941.webp",
+        "width": 941,
+        "height": 1672,
+        "bytes": 202598
+      }
+    ]
+  },
+  {
+    "source": "assets/source/hero-mobile/mov-mobilidade-orla-mobile-v1.png",
+    "width": 941,
+    "height": 1672,
+    "outputs": [
+      {
+        "file": "public/images/hero/mov-mobilidade-orla-mobile-v1-480.webp",
+        "width": 480,
+        "height": 853,
+        "bytes": 45912
+      },
+      {
+        "file": "public/images/hero/mov-mobilidade-orla-mobile-v1-768.webp",
+        "width": 768,
+        "height": 1365,
+        "bytes": 99202
+      },
+      {
+        "file": "public/images/hero/mov-mobilidade-orla-mobile-v1-941.webp",
+        "width": 941,
+        "height": 1672,
+        "bytes": 135216
+      }
+    ]
+  }
+]

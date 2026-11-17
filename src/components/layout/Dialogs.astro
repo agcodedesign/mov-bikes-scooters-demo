@@ -1,0 +1,103 @@
+---
+import ResponsiveImage from '../ui/ResponsiveImage.astro';
+import Button from '../ui/Button.astro';
+import { site } from '../../config/site';
+const homeHref = (hash: string) => Astro.url.pathname === '/' ? hash : `/${hash}`;
+---
+<dialog id="contato-dialog" aria-labelledby="contact-title">
+  <button class="dialog-close" type="button" data-close aria-label="Fechar atendimento">×</button>
+  <p class="eyebrow">Fale com a MOV</p><h2 id="contact-title">Vamos encontrar seu próximo caminho.</h2>
+  <p>Converse sobre os modelos, tire suas dúvidas e encontre uma opção que combine com sua rotina.</p>
+  {site.whatsapp ? <Button href={site.whatsapp}>Conversar pelo WhatsApp ↗</Button> : <p class="notice">O canal de atendimento da MOV ainda não foi informado. Explore os modelos enquanto isso.</p>}
+  <a class="dialog-link" href={homeHref('#catalogo')} data-close-link>Explorar modelos →</a>
+</dialog>
+<dialog id="redes-dialog" aria-labelledby="social-title">
+  <button class="dialog-close" type="button" data-close aria-label="Fechar informações do Instagram">×</button>
+  <h2 id="social-title">Acompanhe a MOV.</h2><p>O perfil oficial do Instagram ainda não foi informado. Confira as novidades da marca por aqui.</p>
+  <a class="dialog-link" href={homeHref('#novidades')} data-close-link>Ver novidades →</a>
+</dialog>
+<dialog id="privacidade-dialog" aria-labelledby="privacy-title">
+  <button class="dialog-close" type="button" data-close aria-label="Fechar informações de privacidade">×</button>
+  <h2 id="privacy-title">Privacidade</h2>
+  <p>Esta vitrine não usa cookies de publicidade nem rastreadores.</p>
+  <p>{site.newsletterEndpoint ? 'Ao solicitar a inscrição, seu e-mail é enviado ao serviço de novidades da MOV.' : 'A inscrição por e-mail ainda não está ativa nesta prévia. O e-mail digitado não é enviado nem armazenado.'}</p>
+  <p>Antes da ativação das inscrições, esta área será atualizada com as informações sobre o uso e a exclusão dos dados.</p>
+</dialog>
+<dialog id="modelo-dialog" class="model-dialog" aria-labelledby="model-title">
+  <button class="dialog-close" type="button" data-close aria-label="Fechar modelo V8 Pro S">×</button>
+  <div class="model-gallery"><ResponsiveImage src="/images/products/mov-v8-pro-s-frontal" widths={[640, 960, 1280]} width={2049} height={1713} alt="Vista frontal da V8 Pro S" sizes="(max-width: 600px) 80vw, 400px" /></div>
+  <div class="model-content"><p class="eyebrow">Bicicleta elétrica • Destaque</p><h2 id="model-title">V8 Pro S</h2><p>Conheça o modelo em destaque na vitrine MOV. Fale com a equipe para consultar detalhes, disponibilidade e condições.</p><Button href={site.whatsapp ? `${site.whatsapp}?text=${encodeURIComponent('Olá! Gostaria de conhecer a V8 Pro S da vitrine MOV.')}` : undefined} dialog={site.whatsapp ? undefined : 'contato'}>Tenho interesse na V8 Pro S</Button></div>
+</dialog>
+<dialog id="modelos-dialog" aria-labelledby="models-title">
+  <button class="dialog-close" type="button" data-close aria-label="Fechar modelos MOV">×</button>
+  <p class="eyebrow">A vitrine MOV</p><h2 id="models-title">Qual é o seu caminho?</h2>
+  <p>Explore a bicicleta em destaque e as scooters apresentadas nesta vitrine.</p>
+  <div class="category-actions"><Button href="/produtos/v8-pro-s/">Conhecer a V8 Pro S</Button><a class="dialog-link" href={homeHref('#scooters')} data-close-link>Explorar scooters →</a></div>
+</dialog>
+<script>
+  let lastTrigger: HTMLElement | null = null;
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const closing = new Map<HTMLDialogElement, Animation>();
+  const closeDialog = (dialog: HTMLDialogElement) => {
+    if (!dialog.open || closing.has(dialog)) return;
+    if (reducedMotion.matches) { dialog.close(); return; }
+    dialog.getAnimations().forEach(animation => animation.finish());
+    const animation = dialog.animate([
+      { opacity: 1, transform: 'none' },
+      { opacity: 0, transform: 'translateY(8px) scale(.99)' },
+    ], { duration: 160, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' });
+    closing.set(dialog, animation);
+    const done = () => {
+      if (closing.get(dialog) !== animation) return;
+      closing.delete(dialog);
+      dialog.close();
+      animation.cancel();
+    };
+    animation.finished.then(done, done);
+  };
+  reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) closing.forEach(animation => animation.finish()); });
+  document.addEventListener('click', event => {
+    const target = event.target as HTMLElement;
+    const trigger = target.closest<HTMLElement>('[data-dialog]');
+    if (trigger) {
+      const dialog = document.getElementById(`${trigger.dataset.dialog}-dialog`) as HTMLDialogElement | null;
+      if (!dialog) return;
+      const current = document.querySelector<HTMLDialogElement>('dialog[open]');
+      if (!current) {
+        lastTrigger = trigger.checkVisibility() ? trigger : document.querySelector<HTMLElement>('.menu-toggle');
+      }
+      if (current) current.close();
+      dialog.showModal();
+    }
+    const closer = target.closest('[data-close], [data-close-link]');
+    const parent = closer?.closest('dialog');
+    if (parent) closeDialog(parent);
+  });
+  document.querySelectorAll<HTMLDialogElement>('dialog').forEach(dialog => {
+    dialog.addEventListener('cancel', event => { event.preventDefault(); closeDialog(dialog); });
+    dialog.addEventListener('click', event => {
+      if (event.target !== dialog) return;
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) closeDialog(dialog);
+    });
+    dialog.addEventListener('close', () => {
+      closing.get(dialog)?.cancel();
+      closing.delete(dialog);
+      if (!document.querySelector('dialog[open]') && lastTrigger?.checkVisibility()) lastTrigger.focus();
+    });
+  });
+</script>
+<style>
+  dialog { inline-size: min(640px, calc(100% - 40px)); max-block-size: calc(100dvh - 40px); overflow: auto; border: 0; border-radius: 22px; padding: 48px 32px 32px; background: var(--color-bg); color: var(--color-ink); box-shadow: 0 20px 80px #0004; }
+  dialog::backdrop { background: rgb(23 34 29 / .7); }
+  dialog h2 { font-size: 1.875rem; margin-block: 14px 20px; }
+  dialog p:not(.eyebrow) { margin-block: 16px; max-inline-size: 65ch; color: var(--color-muted); }
+  .dialog-close { position: absolute; inset-inline-end: 12px; inset-block-start: 10px; display: grid; place-items: center; inline-size: 44px; block-size: 44px; border: 0; border-radius: 50%; background: var(--color-gray); font-size: 1.75rem; line-height: 1; }
+  .dialog-link { display: inline-flex; align-items: center; min-block-size: 44px; font-weight: 700; text-decoration: underline; text-underline-offset: .25em; }
+  .notice { padding: 16px; background: var(--color-gray); border-radius: 12px; }
+  .model-dialog { inline-size: min(940px, calc(100% - 40px)); }
+  .model-dialog[open] { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 28px; align-items: center; }
+  .model-gallery { overflow: hidden; border-radius: 16px; }
+  .category-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; }
+  @media (max-width: 600px) { dialog { padding-inline: 24px; } .model-dialog[open] { grid-template-columns: minmax(0,1fr); } .model-gallery :global(img) { max-block-size: 260px; inline-size: 100%; object-fit: cover; } }
+</style>

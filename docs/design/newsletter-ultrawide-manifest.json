@@ -1,0 +1,25 @@
+{
+  "source": "assets/source/newsletter-ultrawide/mov-encontro-orla-ultrawide-v1.png",
+  "nativeWidth": 2172,
+  "nativeHeight": 724,
+  "outputs": [
+    {
+      "file": "public/images/newsletter/mov-encontro-orla-ultrawide-v1-1280.webp",
+      "width": 1280,
+      "height": 427,
+      "bytes": 112248
+    },
+    {
+      "file": "public/images/newsletter/mov-encontro-orla-ultrawide-v1-1920.webp",
+      "width": 1920,
+      "height": 640,
+      "bytes": 231512
+    },
+    {
+      "file": "public/images/newsletter/mov-encontro-orla-ultrawide-v1-2172.webp",
+      "width": 2172,
+      "height": 724,
+      "bytes": 289594
+    }
+  ]
+}

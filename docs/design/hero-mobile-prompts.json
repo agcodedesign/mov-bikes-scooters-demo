@@ -1,0 +1,21 @@
+{
+  "tool": "Built-in image_gen",
+  "mode": "edit",
+  "nativeWidth": 941,
+  "nativeHeight": 1672,
+  "conversion": "npm run assets:mobile",
+  "prompts": [
+    {
+      "original": "hero 1.jpg",
+      "prompt": "Edit the supplied MOV lifestyle photo hero 1. Preserve the same rider's identity, helmet, clothing, exact bicycle/scooter geometry, wheel count, seat, frame, lights and original atmosphere. Create a photorealistic PORTRAIT mobile website hero photograph, desired 9:16 vertical composition. Recompose and extend scenery vertically, NOT a crop of the landscape photo. Put the ENTIRE rider plus ENTIRE vehicle including helmet and both wheels in the LOWER 42% of the photograph, between y=53% and y=94%, centered horizontally at x=53%. Subject group must fit between x=18% and x=85% with generous left/right clearance. Upper 50% must be calm natural sky, distant trees/buildings/mountains from this exact setting, with NO people or vehicles there, reserved for HTML text overlay. Foreground road/cycle path extends naturally to bottom. Keep the original location and matching photographic perspective, plausible contact shadows and real textures. Natural cinematic photographic light, no graphic dark gradient, no words, no interface, no border, no invented logos, no added vehicles. Composition must remain safe when sides are cropped by 10% for a tall phone screen. Important: full subject small enough in lower half; do NOT make a large close-up portrait."
+    },
+    {
+      "original": "hero 2.jpg",
+      "prompt": "Edit the supplied MOV lifestyle photo hero 2. Preserve the same rider's identity, helmet, clothing, exact bicycle/scooter geometry, wheel count, seat, frame, lights and original atmosphere. Create a photorealistic PORTRAIT mobile website hero photograph, desired 9:16 vertical composition. Recompose and extend scenery vertically, NOT a crop of the landscape photo. Put the ENTIRE rider plus ENTIRE vehicle including helmet and both wheels in the LOWER 42% of the photograph, between y=53% and y=94%, centered horizontally at x=53%. Subject group must fit between x=18% and x=85% with generous left/right clearance. Upper 50% must be calm natural sky, distant trees/buildings/mountains from this exact setting, with NO people or vehicles there, reserved for HTML text overlay. Foreground road/cycle path extends naturally to bottom. Keep the original location and matching photographic perspective, plausible contact shadows and real textures. Natural cinematic photographic light, no graphic dark gradient, no words, no interface, no border, no invented logos, no added vehicles. Composition must remain safe when sides are cropped by 10% for a tall phone screen. Important: full subject small enough in lower half; do NOT make a large close-up portrait."
+    },
+    {
+      "original": "hero 3.jpg",
+      "prompt": "Edit the supplied MOV lifestyle photo hero 3. Preserve the same rider's identity, helmet, clothing, exact bicycle/scooter geometry, wheel count, seat, frame, lights and original atmosphere. Create a photorealistic PORTRAIT mobile website hero photograph, desired 9:16 vertical composition. Recompose and extend scenery vertically, NOT a crop of the landscape photo. Put the ENTIRE rider plus ENTIRE vehicle including helmet and both wheels in the LOWER 42% of the photograph, between y=53% and y=94%, centered horizontally at x=53%. Subject group must fit between x=18% and x=85% with generous left/right clearance. Upper 50% must be calm natural sky, distant trees/buildings/mountains from this exact setting, with NO people or vehicles there, reserved for HTML text overlay. Foreground road/cycle path extends naturally to bottom. Keep the original location and matching photographic perspective, plausible contact shadows and real textures. Natural cinematic photographic light, no graphic dark gradient, no words, no interface, no border, no invented logos, no added vehicles. Composition must remain safe when sides are cropped by 10% for a tall phone screen. Important: full subject small enough in lower half; do NOT make a large close-up portrait."
+    }
+  ]
+}

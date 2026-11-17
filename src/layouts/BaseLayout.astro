@@ -1,0 +1,51 @@
+---
+import '../styles/global.css';
+import '@fontsource-variable/manrope';
+import { site } from '../config/site';
+import Motion from '../components/layout/Motion.astro';
+import Cinematic from '../components/layout/Cinematic.astro';
+import Preloader from '../components/layout/Preloader.astro';
+interface Props { title?: string; description?: string; homeMotion?: boolean; }
+const { title = 'MOV Bikes & Scooters | Sua cidade. Seu ritmo.', description = site.description, homeMotion = true } = Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#FFA300" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/images/hero/mov-mobilidade-orla-1280.webp" />
+    <meta property="og:image:alt" content="Mobilidade elétrica MOV na cidade" />
+    <link rel="icon" type="image/webp" href="/images/brand/mov-logo-simbolo.webp" />
+    <title>{title}</title>
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const navigation = performance.getEntriesByType('navigation')[0];
+        let internalNavigation = false;
+        try { internalNavigation = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch {}
+        const skipIntro = navigation?.type === 'back_forward' || (internalNavigation && navigation?.type !== 'reload');
+        if (skipIntro || matchMedia('(prefers-reduced-motion: reduce)').matches) { root.dataset.movIntro = 'done'; return; }
+        root.dataset.movIntro = 'loading';
+        root.classList.add('is-preloading');
+        // Independent of the animation bundle: never trap the visitor if a module/resource fails.
+        setTimeout(() => {
+          if (root.dataset.movIntro !== 'loading') return;
+          root.dataset.movIntro = 'done';
+          root.classList.remove('is-preloading', 'is-preloader-landing', 'is-hero-revealing');
+          const content = document.getElementById('site-content');
+          if (content) content.inert = false;
+          const loader = document.getElementById('mov-preloader');
+          if (loader) loader.hidden = true;
+          document.dispatchEvent(new Event('mov:intro-ready'));
+        }, 5000);
+      })();
+    </script>
+  </head>
+  <body><Preloader /><div id="site-content"><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><slot /></div>{homeMotion && <Motion />}{homeMotion && <Cinematic />}</body>
+</html>

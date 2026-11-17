@@ -1,0 +1,20 @@
+{
+  "model": "Editorial reconstruction from supplied photographs",
+  "triangles": 124630,
+  "meshes": 64,
+  "groups": [
+    "frame",
+    "battery",
+    "suspension",
+    "brakes",
+    "wheels",
+    "cockpit",
+    "light",
+    "seat",
+    "drivetrain"
+  ],
+  "glbBytes": 3010564,
+  "blend": "D:\\AG-DESIGN\\AG_OPERACOES\\01_CLIENTES\\DEMOS\\Mov-Mobile\\assets\\source\\v8-pro-s\\v8-pro-s.blend",
+  "compression": "KHR_draco_mesh_compression, level 6",
+  "scene": "MOV \u2014 V8 Pro S.003"
+}

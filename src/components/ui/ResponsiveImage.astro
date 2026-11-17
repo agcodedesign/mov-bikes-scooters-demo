@@ -1,0 +1,21 @@
+---
+interface Props {
+  src: string;
+  widths: number[];
+  width: number;
+  height: number;
+  alt: string;
+  sizes?: string;
+  class?: string;
+  priority?: boolean;
+}
+const { src, widths, width, height, alt, sizes = '100vw', class: className, priority = false } = Astro.props;
+---
+<img
+  src={`${src}-${widths.at(-1)}.webp`}
+  srcset={widths.map(value => `${src}-${value}.webp ${value}w`).join(', ')}
+  {sizes} {width} {height} {alt} class={className}
+  loading={priority ? 'eager' : 'lazy'}
+  fetchpriority={priority ? 'high' : undefined}
+  decoding="async"
+/>

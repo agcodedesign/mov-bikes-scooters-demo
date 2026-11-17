@@ -1,0 +1,90 @@
+---
+import { site } from '../../config/site';
+---
+<section class="newsletter" id="novidades" aria-labelledby="newsletter-title">
+  <picture class="newsletter-photo">
+    <source media="(min-width: 1100px)" srcset="/images/newsletter/mov-encontro-orla-ultrawide-v1-1280.webp 1280w, /images/newsletter/mov-encontro-orla-ultrawide-v1-1920.webp 1920w, /images/newsletter/mov-encontro-orla-ultrawide-v1-2172.webp 2172w" sizes="100vw" width="2172" height="724" />
+    <img src="/images/newsletter/mov-encontro-orla-1920.webp" srcset="/images/newsletter/mov-encontro-orla-768.webp 768w, /images/newsletter/mov-encontro-orla-1280.webp 1280w, /images/newsletter/mov-encontro-orla-1920.webp 1920w" sizes="100vw" width="2752" height="1536" alt="Pessoas com bicicletas e scooters elétricas MOV se encontram na orla" loading="lazy" decoding="async" />
+  </picture>
+  <div class="newsletter-inner container">
+    <h2 id="newsletter-title">Fique por dentro<br />do movimento MOV.</h2>
+    <p class="newsletter-description">Receba novidades da MOV e descubra bicicletas e scooters elétricas para acompanhar sua rotina e transformar a maneira de viver a cidade.</p>
+    <form class="signup" data-endpoint={site.newsletterEndpoint} novalidate>
+      <label class="sr-only" for="newsletter-email">Seu e-mail</label>
+      <div class="signup-field">
+        <input id="newsletter-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="Seu e-mail" maxlength="254" required aria-describedby="newsletter-feedback" />
+        <button type="submit" disabled><span class="submit-label">Inscrever-se</span><span class="arrow-circle" aria-hidden="true">↗</span></button>
+      </div>
+      <p class="signup-feedback" id="newsletter-feedback" role="status" aria-live="polite"></p>
+      <noscript><p class="signup-feedback">As inscrições ainda não estão disponíveis nesta prévia.</p></noscript>
+    </form>
+  </div>
+</section>
+<script>
+  const form = document.querySelector<HTMLFormElement>('.signup');
+  if (form) {
+    const input = form.querySelector<HTMLInputElement>('input')!;
+    const submit = form.querySelector<HTMLButtonElement>('button')!;
+    const label = form.querySelector<HTMLElement>('.submit-label')!;
+    const feedback = form.querySelector<HTMLElement>('.signup-feedback')!;
+    // Enable only after interception is installed: a native GET must never expose the email in the URL.
+    submit.disabled = false;
+    input.addEventListener('input', () => { input.removeAttribute('aria-invalid'); feedback.textContent = ''; });
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (submit.disabled) return;
+      input.value = input.value.trim();
+      if (!input.checkValidity()) {
+        input.setAttribute('aria-invalid', 'true');
+        feedback.textContent = input.value ? 'Digite um e-mail válido, como nome@exemplo.com.' : 'Digite seu e-mail para se inscrever.';
+        input.focus();
+        return;
+      }
+      input.removeAttribute('aria-invalid');
+      if (!form.dataset.endpoint) {
+        feedback.textContent = 'As inscrições ainda não estão abertas. Volte em breve para acompanhar as novidades.';
+        return;
+      }
+      submit.disabled = true;
+      form.setAttribute('aria-busy', 'true');
+      label.textContent = 'Enviando…';
+      feedback.textContent = '';
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+      try {
+        const response = await fetch(form.dataset.endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: input.value }), signal: controller.signal, credentials: 'omit' });
+        if (!response.ok) throw new Error('Signup failed');
+        feedback.textContent = 'Inscrição recebida. Obrigado por acompanhar a MOV.';
+        form.reset();
+      } catch {
+        feedback.textContent = 'Não foi possível enviar sua inscrição. Confira sua conexão e tente novamente.';
+      } finally {
+        clearTimeout(timeout);
+        submit.disabled = false;
+        form.removeAttribute('aria-busy');
+        label.textContent = 'Inscrever-se';
+      }
+    });
+  }
+</script>
+<style>
+  .newsletter { position: relative; isolation: isolate; color: var(--color-bg); }
+  .newsletter :global(.newsletter-photo) { position: absolute; inset: 0; z-index: -2; inline-size: 100%; block-size: 100%; object-fit: cover; object-position: center; }
+  .newsletter-photo img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: center; }
+  .newsletter::after { content: ''; position: absolute; inset: 0; z-index: -1; background: rgb(23 34 29 / .58); }
+  .newsletter-inner { min-block-size: 380px; padding-block: 56px 50px; display: flex; align-items: center; flex-direction: column; text-align: center; }
+  h2 { font-size: 2.5rem; line-height: 1.2; font-weight: 700; letter-spacing: -.015em; }
+  .newsletter-description { max-inline-size: 410px; margin-block-start: 12px; color: var(--color-gray); font-size: .875rem; line-height: 1.4; }
+  .signup { inline-size: min(100%, 480px); margin-block-start: 26px; }
+  .signup-field { display: flex; align-items: center; padding: 3px; border-radius: 999px; background: #fff; text-align: start; }
+  input { min-inline-size: 0; inline-size: 100%; background: transparent; color: var(--color-ink); border: 0; border-radius: 999px; padding: 10px 15px; font-size: 1rem; line-height: 1.4; }
+  input::placeholder { color: #646b65; opacity: 1; }
+  input[aria-invalid="true"] { box-shadow: inset 0 0 0 2px #b3261e; }
+  .signup button { display: inline-flex; align-items: center; justify-content: space-between; gap: 8px; flex-shrink: 0; min-block-size: 44px; min-inline-size: 130px; border: 0; border-radius: 999px; padding: 6px 6px 6px 16px; background: var(--color-accent); color: var(--color-ink); font-size: .75rem; font-weight: 600; }
+  .signup button:hover { background: var(--color-accent-hover); }
+  .signup button:disabled { opacity: .8; }
+  .arrow-circle { display: grid; place-items: center; inline-size: 26px; block-size: 26px; border-radius: 50%; background: #fff; font-size: 1rem; }
+  .signup-feedback { min-block-size: 0; margin-block-start: 12px; color: #fff; font-size: .875rem; line-height: 1.5; }
+  .signup-feedback:empty { margin-block-start: 0; }
+  @media (max-width: 600px) { .newsletter-inner { min-block-size: 360px; padding-block: 40px; } h2 { font-size: 1.875rem; } .newsletter-description { font-size: .875rem; } .signup { margin-block-start: 22px; } input { padding-inline: 13px; } .signup button { min-inline-size: 125px; padding-inline-start: 12px; } .newsletter :global(.newsletter-photo) { object-position: 48% center; } }
+</style>

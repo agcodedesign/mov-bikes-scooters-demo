@@ -1,0 +1,123 @@
+<script>
+  // Progressive enhancement: content remains visible without JavaScript or animations.
+  const preference = matchMedia('(prefers-reduced-motion: reduce)');
+  const active = new Map<Element, Animation>();
+  const seen = new WeakSet<Element>();
+  const easing = 'cubic-bezier(.2,.7,.2,1)';
+  type Profile = 'copy' | 'card' | 'photo' | 'line';
+  const profiles: Record<Profile, { frames: Keyframe[]; duration: number }> = {
+    copy: { frames: [{ opacity: 0, transform: 'translateY(18px)' }, { opacity: 1, transform: 'none' }], duration: 480 },
+    line: { frames: [{ transform: 'translateY(112%) rotate(3deg)' }, { transform: 'none' }], duration: 900 },
+    photo: { frames: [{ opacity: 0, transform: 'translateY(28px)' }, { opacity: 1, transform: 'none' }], duration: 760 },
+    card: { frames: [{ opacity: 0, transform: 'translateY(26px) scale(.975)', offset: 0 }, { opacity: 1, transform: 'translateY(-2px) scale(1)', offset: .75 }, { opacity: 1, transform: 'none', offset: 1 }], duration: 600 },
+  };
+  const reveal = (element: Element, delay = 0, profile: Profile = 'copy') => {
+    if (element.closest('.brand, .showcase, .editorial, .experience, .newsletter, footer')) return;
+    if (preference.matches || seen.has(element)) return;
+    seen.add(element);
+    const { frames, duration } = profiles[profile];
+    const animation = element.animate(frames, { duration, delay, easing, fill: 'backwards' });
+    active.set(element, animation);
+    animation.finished.then(() => active.delete(element)).catch(() => {});
+  };
+  const openHero = () => {
+    if (heroOpened) return;
+    heroOpened = true;
+    reveal(document.querySelector('.hero-accent')!, 0, 'card');
+    reveal(document.querySelector('.hero-eyebrow')!, 60);
+    document.querySelectorAll('.hero h1 > span > span').forEach((line, index) => reveal(line, 140 + index * 120, 'line'));
+    reveal(document.querySelector('.hero-description')!, 330);
+    reveal(document.querySelector('.hero-actions')!, 650);
+  };
+  let heroOpened = false;
+  if (document.documentElement.dataset.movIntro === 'loading') {
+    document.addEventListener('mov:intro-reveal', openHero, { once: true });
+    document.addEventListener('mov:intro-ready', openHero, { once: true });
+  }
+  else openHero();
+  const targets = document.querySelectorAll('main section:not(.hero) h2, .brand-photo, .brand-story, .benefit-card, .featured, .product-details, .editorial-image, .editorial-copy, .experience-main-image, .experience-details, .empty-reviews, .newsletter-description, .signup, footer');
+  const observer = new IntersectionObserver(entries => {
+    const groups = new Map<Element, number>();
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      // Never transform both a parent and its heading during the same reveal.
+      if (!entry.target.parentElement?.closest('.brand-story, .editorial-copy, .experience-details')) {
+        const group = entry.target.closest('section') || entry.target;
+        const index = groups.get(group) || 0;
+        groups.set(group, index + 1);
+        const profile: Profile = entry.target.matches('.benefit-card, .featured, .experience-details') ? 'card'
+          : entry.target.matches('.brand-photo, .editorial-image, .experience-main-image, .product-details') ? 'photo' : 'copy';
+        reveal(entry.target, Math.min(index * 85, 255), profile);
+      }
+      observer.unobserve(entry.target);
+    }
+  }, { threshold: .08, rootMargin: '0px 0px -24px 0px' });
+  targets.forEach(element => observer.observe(element));
+  // A sampled damped spring: release from the actual interrupted scale, never from a fixed start.
+  const presses = new Map<HTMLElement, Animation>();
+  const release = (button: HTMLElement) => {
+    const press = presses.get(button);
+    if (!press) return;
+    const start = Number.parseFloat(getComputedStyle(button).scale) || 1;
+    press.cancel();
+    presses.delete(button);
+    if (preference.matches) return;
+    const frames = Array.from({ length: 33 }, (_, index) => {
+      const t = index / 32;
+      const response = Math.exp(-8 * t) * (Math.cos(10 * t) + .8 * Math.sin(10 * t));
+      return { scale: String(index === 32 ? 1 : 1 + (start - 1) * response), offset: t };
+    });
+    const animation = button.animate(frames, { duration: 360, easing: 'linear' });
+    presses.set(button, animation);
+    animation.finished.then(() => { if (presses.get(button) === animation) presses.delete(button); }).catch(() => {});
+  };
+  document.querySelectorAll<HTMLElement>('.button, .signup button, .menu-toggle, .dialog-close').forEach(button => {
+    const down = () => {
+      if (preference.matches || button.matches(':disabled')) return;
+      const scale = getComputedStyle(button).scale;
+      presses.get(button)?.cancel();
+      const animation = button.animate([{ scale: scale === 'none' ? '1' : scale }, { scale: '.965' }], { duration: 100, easing, fill: 'forwards' });
+      presses.set(button, animation);
+    };
+    button.addEventListener('pointerdown', down);
+    button.addEventListener('pointerleave', () => release(button));
+    button.addEventListener('keydown', event => { if (!event.repeat && (event.key === 'Enter' || event.key === ' ')) down(); });
+    button.addEventListener('keyup', () => release(button));
+    button.addEventListener('blur', () => release(button));
+  });
+  const releaseAll = () => [...presses.keys()].forEach(release);
+  document.addEventListener('pointerup', releaseAll);
+  document.addEventListener('pointercancel', releaseAll);
+  const cancel = () => { active.forEach(animation => animation.cancel()); active.clear(); };
+  const stop = () => { cancel(); presses.forEach(animation => animation.cancel()); presses.clear(); };
+  preference.addEventListener('change', () => {
+    if (preference.matches) {
+      stop();
+      document.querySelector('.mobile-menu')?.getAnimations({ subtree: true }).forEach(animation => animation.cancel());
+    }
+  });
+  document.addEventListener('focusin', event => {
+    active.forEach((animation, element) => { if (event.target instanceof Node && element.contains(event.target)) animation.finish(); });
+  });
+  window.addEventListener('pagehide', stop);
+</script>
+<style is:global>
+  :root { --motion-ease: cubic-bezier(.2,.7,.2,1); }
+  @media (prefers-reduced-motion: no-preference) {
+    .button, .signup button { transition: transform 150ms var(--motion-ease), background-color 150ms ease; }
+    .button:hover, .signup button:hover { transform: translateY(-2px); }
+    .button:active, .signup button:active { transform: translateY(0); }
+    .button > span[aria-hidden], .arrow-circle { display: inline-grid; transition: transform 150ms var(--motion-ease); }
+    .button:hover > span[aria-hidden], .signup button:hover .arrow-circle { transform: translateX(3px); }
+    .benefit-number { transition: transform 300ms var(--motion-ease); }
+    .benefit-card:hover .benefit-number { transform: translateY(-3px); }
+    .desktop-nav a { position: relative; }
+    .desktop-nav a::after { content: ''; position: absolute; inset-inline: 0; inset-block-end: 4px; block-size: 2px; background: var(--color-accent); transform: scaleX(0); transform-origin: left; transition: transform 220ms var(--motion-ease); }
+    .desktop-nav a:hover, .desktop-nav a:focus-visible { text-decoration: none; }
+    .desktop-nav a:hover::after, .desktop-nav a:focus-visible::after { transform: scaleX(1); }
+    dialog[open] { animation: dialog-enter 260ms var(--motion-ease) both; }
+    dialog[open]::backdrop { animation: backdrop-enter 220ms ease both; }
+    @keyframes dialog-enter { from { opacity: 0; transform: translateY(16px) scale(.985); } to { opacity: 1; transform: none; } }
+    @keyframes backdrop-enter { from { opacity: 0; } to { opacity: 1; } }
+  }
+</style>

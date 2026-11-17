@@ -1,0 +1,48 @@
+---
+import ResponsiveImage from '../ui/ResponsiveImage.astro';
+import Button from '../ui/Button.astro';
+---
+<section id="catalogo" class="showcase" aria-labelledby="showcase-title">
+  <div class="product-opening" aria-hidden="true">
+    <img src="/images/products/mov-v8-pro-s-frontal-1920.webp" srcset="/images/products/mov-v8-pro-s-frontal-640.webp 640w, /images/products/mov-v8-pro-s-frontal-1280.webp 1280w, /images/products/mov-v8-pro-s-frontal-1920.webp 1920w" sizes="100vw" width="2049" height="1713" alt="" loading="lazy" decoding="async" />
+  </div>
+  <div class="container">
+    <p class="eyebrow">A vitrine MOV</p>
+    <h2 id="showcase-title">Encontre o modelo ideal para você.</h2>
+    <p class="description">Explore nossas opções de mobilidade elétrica e descubra qual combina com sua rotina.</p>
+    <div class="showcase-grid">
+      <article class="featured" aria-labelledby="featured-name">
+        <ResponsiveImage src="/images/products/mov-v8-pro-s-frontal" widths={[640, 960, 1280]} width={2049} height={1713} alt="V8 Pro S: vista frontal do farol e da roda" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1099px) 50vw, 610px" />
+        <div class="featured-info">
+          <div><p class="product-category">Bicicleta elétrica <span aria-hidden="true">•</span> Destaque</p><h3 id="featured-name">V8 Pro S</h3></div>
+          <Button href="/produtos/v8-pro-s/" variant="text" label="Conhecer modelo V8 Pro S">Conhecer modelo <span aria-hidden="true">→</span></Button>
+        </div>
+      </article>
+      <div class="product-details">
+        <ResponsiveImage src="/images/products/mov-bicicleta-detalhe-traseiro" widths={[640, 960, 1280]} width={1376} height={768} alt="Detalhe do quadro, da roda traseira e da suspensão da bicicleta elétrica" sizes="(max-width: 600px) calc(100vw - 40px), 648px" />
+        <ResponsiveImage src="/images/products/mov-bicicleta-vista-superior" widths={[640, 960, 1280]} width={1376} height={768} alt="Bicicleta elétrica vista de cima, com guidão e banco em destaque" sizes="(max-width: 600px) calc(100vw - 40px), 648px" />
+      </div>
+    </div>
+    <div class="showcase-action"><Button href="/catalogo/" variant="text">Ver todos os modelos <span aria-hidden="true">→</span></Button></div>
+  </div>
+</section>
+<style>
+  .showcase { color: var(--color-bg); background: var(--color-ink); padding-block: 60px 100px; }
+  .eyebrow { color: var(--color-accent); margin-block-end: 16px; }
+  h2 { font-size: clamp(1.875rem, 3.06vw, 2.75rem); }
+  .description { color: var(--color-gray); font-size: 1.125rem; margin-block-start: 12px; max-inline-size: 75ch; }
+  .showcase-grid { display: grid; grid-template-columns: 610fr 648fr; gap: 38px; margin-block-start: 52px; }
+  .featured { position: relative; min-inline-size: 0; border-radius: var(--radius-card); overflow: hidden; }
+  .featured > :global(img) { inline-size: 100%; block-size: 510px; object-fit: cover; }
+  .featured-info { position: absolute; inset-inline: 0; inset-block-end: 0; display: flex; align-items: end; justify-content: space-between; gap: 12px; padding: 22px 24px; border-radius: 16px; background: #fff; color: var(--color-ink); min-block-size: 120px; }
+  .product-category { font-size: .8125rem; color: #7a4c00; text-transform: uppercase; font-weight: 700; }
+  h3 { font-size: 1.5rem; margin-block-start: 10px; font-weight: 700; }
+  .featured-info :global(.button) { font-size: 1rem; flex-shrink: 0; }
+  .product-details { display: grid; gap: 25px; }
+  .product-details :global(img) { inline-size: 100%; block-size: 100%; min-block-size: 0; max-block-size: 250px; object-fit: cover; border-radius: var(--radius-card); }
+  .showcase-action { display: flex; justify-content: flex-end; color: var(--color-accent); padding-block-start: 20px; }
+  .showcase-action :global(.button) { font-size: 1.25rem; }
+  @media (min-width: 601px) and (max-width: 1099px) { .showcase-grid { gap: 24px; } .featured > :global(img) { block-size: 430px; } .featured-info { position: static; flex-wrap: wrap; padding: 20px; } .product-details :global(img) { max-block-size: none; } }
+  @media (min-width: 601px) and (max-width: 899px) { .showcase-grid { grid-template-columns: minmax(0,1fr); } .featured > :global(img) { block-size: 420px; object-position: center 45%; } .product-details { grid-template-columns: repeat(2,minmax(0,1fr)); } .product-details :global(img) { block-size: auto; aspect-ratio: 1.5; } }
+  @media (max-width: 600px) { .showcase { padding-block: 48px 56px; } .description { font-size: 1rem; line-height: 1.5; } .showcase-grid { grid-template-columns: minmax(0,1fr); gap: 24px; margin-block-start: 32px; } .featured > :global(img) { block-size: 320px; } .featured-info { position: static; flex-wrap: wrap; padding: 20px; } .product-category { font-size: .75rem; } .featured-info :global(.button) { min-block-size: 44px; } .product-details { gap: 20px; } .product-details :global(img) { block-size: auto; aspect-ratio: 1.8; } .showcase-action { justify-content: flex-start; } .showcase-action :global(.button) { font-size: 1rem; } }
+</style>

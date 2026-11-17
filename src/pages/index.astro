@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Dialogs from '../components/layout/Dialogs.astro';
+import Hero from '../components/sections/Hero.astro';
+import Brand from '../components/sections/Brand.astro';
+import Benefits from '../components/sections/Benefits.astro';
+import Showcase from '../components/sections/Showcase.astro';
+import Editorial from '../components/sections/Editorial.astro';
+import Experience from '../components/sections/Experience.astro';
+import Testimonials from '../components/sections/Testimonials.astro';
+import Newsletter from '../components/sections/Newsletter.astro';
+---
+<BaseLayout>
+  <Header />
+  <main id="conteudo" tabindex="-1">
+    <Hero />
+    <div class="brand-chapter"><Brand /></div>
+    <Benefits />
+    <Showcase />
+    <div class="story-chapter"><Editorial /><Experience /><Testimonials /></div>
+    <Newsletter />
+  </main>
+  <Footer />
+  <Dialogs />
+</BaseLayout>

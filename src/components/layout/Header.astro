@@ -1,0 +1,76 @@
+---
+import { navigation, site } from '../../config/site';
+import Button from '../ui/Button.astro';
+const isHome = Astro.url.pathname === '/';
+---
+<header class="site-header" id="inicio">
+  <div class="container header-inner">
+    <a class="logo" href={isHome ? '#inicio' : '/'} aria-label="MOV Bikes & Scooters, início">
+      <span class="header-logo">
+        <img src="/images/brand/mov-logo-fundo-claro.webp" width="909" height="412" alt="MOV Bikes e Scooters" decoding="async" />
+        <span class="logo-landing-target" data-preloader-target aria-hidden="true"></span>
+      </span>
+    </a>
+    <nav class="desktop-nav" aria-label="Navegação principal">
+      {navigation.map(item => <a href={item.href}>{item.label}</a>)}
+    </nav>
+    <div class="header-contact"><Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'}>Falar com a MOV</Button></div>
+    <button class="menu-toggle" type="button" aria-controls="mobile-menu" aria-expanded="false" aria-label="Abrir menu">
+      <svg width="26" height="24" viewBox="0 0 26 24" aria-hidden="true"><path d="M2 5h22M2 12h22M2 19h22" fill="none" stroke="currentColor" stroke-width="2" /></svg>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu" hidden>
+    <nav class="container" aria-label="Navegação mobile">
+      {navigation.map(item => <a href={item.href}>{item.label}</a>)}
+      <Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'}>Falar com a MOV</Button>
+    </nav>
+  </div>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  if (toggle && menu) {
+    const setOpen = (open: boolean) => {
+      menu.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+      if (open && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        menu.querySelectorAll('nav > *').forEach((item, index) => {
+          item.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: index * 35, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+        });
+      } else {
+        menu.getAnimations({ subtree: true }).forEach(animation => animation.cancel());
+      }
+    };
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    menu.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a,button')) setOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !menu.hidden) { setOpen(false); toggle.focus(); }
+    });
+    matchMedia('(min-width: 1100px)').addEventListener('change', event => { if (event.matches) setOpen(false); });
+  }
+</script>
+<style>
+  .site-header { position: relative; z-index: 5; background: var(--color-bg); }
+  .site-header { --content-width:1600px; --gutter:40px; }
+  @media(max-width:1099px) { .site-header { --gutter:clamp(40px,5vw,96px); } }
+  @media(max-width:600px) { .site-header { --gutter:20px; } }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 32px; min-block-size: 94px; }
+  .logo { flex: 0 0 142px; }
+  .header-logo { display: block; position: relative; inline-size: 142px; }
+  .header-logo img { display: block; inline-size: 100%; block-size: auto; }
+  /* Artwork occupies x=19,y=14,w=870,h=384 inside the supplied 909×412 WebP canvas. */
+  .logo-landing-target { position: absolute; inset-inline-start: 2.090209%; inset-block-start: 3.398058%; inline-size: 95.709571%; block-size: 93.203883%; pointer-events: none; }
+  .desktop-nav { display: flex; flex: 1; justify-content: space-evenly; gap: 20px; margin-inline: 64px; }
+  .desktop-nav a { padding-block: 12px; font-size: .9375rem; font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .desktop-nav a:hover { text-decoration: underline; }
+  .header-contact :global(.button) { white-space: nowrap; font-size: 1rem; min-inline-size: 178px; }
+  .menu-toggle { display: none; align-items: center; justify-content: center; inline-size: 48px; block-size: 48px; background: transparent; border: 1px solid transparent; border-radius: 10px; }
+  .mobile-menu { border-block-start: 1px solid var(--color-gray); padding-block: 16px 24px; }
+  .mobile-menu nav { display: grid; gap: 8px; }
+  .mobile-menu a { padding: 12px; font-weight: 600; text-decoration: none; }
+  @media (max-width: 1099px) { .desktop-nav { display: none; } .menu-toggle { display: flex; } .header-contact { margin-inline-start: auto; } .header-inner { min-block-size: 80px; } }
+  @media (max-width: 600px) { .header-inner { min-block-size: 76px; gap: 16px; } .header-contact { display: none; } .logo, .header-logo { inline-size: 112px; flex-basis: 112px; } }
+</style>

@@ -1,0 +1,100 @@
+---
+import BrandLogo from '../ui/BrandLogo.astro';
+---
+<div class="preloader" id="mov-preloader" role="status" aria-live="polite" aria-label="Carregando a MOV">
+  <div class="preloader-backdrop" aria-hidden="true"></div>
+  <div class="preloader-mark"><BrandLogo /></div>
+</div>
+<script>
+  import gsap from 'gsap';
+  const root = document.documentElement;
+  const overlay = document.getElementById('mov-preloader')!;
+  const content = document.getElementById('site-content')!;
+  if (root.dataset.movIntro === 'loading') {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    content.inert = true;
+    let released = false;
+    let drawing: gsap.core.Timeline | undefined;
+    let exit: gsap.core.Timeline | undefined;
+    overlay.dataset.phase = 'drawing';
+    const complete = (notify = true) => {
+      if (released) return;
+      released = true;
+      drawing?.kill();
+      exit?.kill();
+      content.inert = false;
+      root.dataset.movIntro = 'done';
+      root.classList.remove('is-preloading', 'is-preloader-landing', 'is-hero-revealing');
+      overlay.hidden = true;
+      document.removeEventListener('keydown', onKey);
+      reduced.removeEventListener('change', onPreference);
+      window.removeEventListener('pagehide', onPageHide);
+      window.removeEventListener('resize', onResize);
+      if (notify) document.dispatchEvent(new Event('mov:intro-ready'));
+    };
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') { event.preventDefault(); complete(); } };
+    const onPreference = () => { if (reduced.matches) complete(); };
+    const onPageHide = () => complete();
+    const onResize = () => { if (overlay.dataset.phase === 'landing') complete(); };
+    document.addEventListener('keydown', onKey);
+    reduced.addEventListener('change', onPreference);
+    window.addEventListener('pagehide', onPageHide);
+    window.addEventListener('resize', onResize);
+    document.addEventListener('mov:intro-ready', () => complete(false), { once: true });
+    const paths = [...overlay.querySelectorAll<SVGPathElement>('path')];
+    const ready = Promise.allSettled([
+      document.fonts.ready,
+      document.querySelector<HTMLImageElement>('.hero-slide.is-active img')?.decode() ?? Promise.resolve(),
+      document.querySelector<HTMLImageElement>('.header-logo img')?.decode() ?? Promise.resolve(),
+    ]);
+    const drawn = new Promise<void>(resolve => {
+      drawing = gsap.timeline({ onComplete: resolve });
+      paths.forEach((path, index) => {
+        const length = path.getTotalLength();
+        gsap.set(path, { fillOpacity: 0, strokeOpacity: 0, stroke: path.style.fill, strokeDasharray: `${length} ${length}`, strokeDashoffset: length });
+        if (index >= 3) return;
+        path.dataset.letter = ['M', 'O', 'V'][index];
+        const start = index * .56;
+        drawing!.set(path, { strokeOpacity: 1 }, start)
+          .to(path, { strokeDashoffset: 0, duration: .68, ease: 'power2.inOut' }, start)
+          .to(path, { fillOpacity: 1, strokeOpacity: 0, duration: .24, ease: 'power1.out' }, start + .58);
+      });
+      drawing.to(paths.slice(3), { fillOpacity: 1, duration: .24, stagger: .018, ease: 'power1.out' }, 1.4);
+      drawing.to({}, { duration: .12 });
+    });
+    Promise.all([drawn, ready]).then(() => {
+      if (released) return;
+      const target = document.querySelector<HTMLElement>('[data-preloader-target]');
+      const mark = overlay.querySelector<HTMLElement>('.preloader-mark')!;
+      if (!target) { complete(); return; }
+      const from = mark.getBoundingClientRect();
+      const to = target.getBoundingClientRect();
+      if (!to.width || to.bottom <= 0 || to.top >= innerHeight) { complete(); return; }
+      overlay.dataset.phase = 'landing';
+      root.classList.add('is-preloader-landing');
+      exit = gsap.timeline({ onComplete: complete });
+      exit.to(mark, { x: to.left - from.left, y: to.top - from.top, scale: to.width / from.width, transformOrigin: '0 0', duration: .9, ease: 'power3.inOut' }, 0)
+        .to(overlay.querySelector('.preloader-backdrop'), { yPercent: -100, duration: .75, ease: 'power3.inOut' }, 0)
+        .call(() => { root.classList.add('is-hero-revealing'); document.dispatchEvent(new Event('mov:intro-reveal')); }, [], .62);
+    });
+  } else {
+    overlay.hidden = true;
+  }
+</script>
+<style is:global>
+  .preloader { display: none; }
+  .is-preloading { overflow: hidden; }
+  .is-preloading body { overflow: hidden; }
+  .is-preloading #site-content { visibility: hidden; }
+  .is-preloading .preloader { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: clip; }
+  .preloader-backdrop { position: absolute; inset: 0; background: var(--color-bg); }
+  .preloader-mark { position: relative; inline-size: min(56vw, 420px); }
+  .preloader-mark svg { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 870 / 384; }
+  .preloader-mark path { fill-opacity: 0; stroke: #ffa300; stroke-opacity: .16; stroke-width: .12; stroke-linecap: round; stroke-linejoin: round; }
+  .is-preloading:not(.is-preloader-landing) .hero-slide.is-active { animation-play-state: paused; }
+  .is-preloading.is-preloader-landing #site-content { visibility: visible; }
+  .is-preloading.is-preloader-landing .header-logo img { opacity: 0; }
+  .is-preloading:not(.is-hero-revealing) .hero-content { visibility: hidden; }
+  @media (max-width: 600px) { .preloader-mark { inline-size: min(68vw, 320px); } }
+  @media (prefers-reduced-motion: reduce) { .preloader { display: none !important; } }
+</style>

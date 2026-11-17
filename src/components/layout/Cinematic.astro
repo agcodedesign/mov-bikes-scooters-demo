@@ -1,0 +1,190 @@
+<script>
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true });
+
+  // Each scene owns its transforms. No scroll interception or artificial wheel velocity.
+  const media = gsap.matchMedia();
+  media.add({ motion: '(prefers-reduced-motion: no-preference)', desktop: '(min-width: 1100px) and (min-height: 760px)' }, context => {
+    const { motion, desktop } = context.conditions!;
+    if (!motion) return;
+    document.documentElement.classList.add('cinema-active');
+    const follow = desktop ? .48 : .22;
+    const product = document.querySelector<HTMLElement>('.showcase')!;
+    const headings = [...document.querySelectorAll<HTMLElement>('.brand h2, .showcase h2, .editorial h2, .experience h2, .newsletter h2')];
+    // Retain semantic names and line breaks; masks expose whole words rather than letter typing.
+    headings.forEach(heading => {
+      if (!heading.dataset.split) {
+        heading.setAttribute('aria-label', heading.innerText.replace(/\s+/g, ' ').trim());
+        const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
+        const nodes: Text[] = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode as Text);
+        nodes.forEach(node => {
+          const fragment = document.createDocumentFragment();
+          node.textContent!.split(/(\s+)/).forEach(word => {
+            if (!word.trim()) { fragment.append(word); return; }
+            const mask = document.createElement('span');
+            mask.className = 'word-mask';
+            mask.setAttribute('aria-hidden', 'true');
+            const inner = document.createElement('span');
+            inner.className = 'word-motion';
+            inner.textContent = word;
+            mask.append(inner);
+            fragment.append(mask);
+          });
+          node.replaceWith(fragment);
+        });
+        heading.dataset.split = 'true';
+      }
+    });
+
+    // First handoff: the brand's light plane covers the living hero without a hard section cut.
+    ScrollTrigger.create({ id: 'mov-hero-handoff', trigger: '.hero', start: 'top top', endTrigger: '.brand-chapter', end: 'top top', pin: true, pinSpacing: false, invalidateOnRefresh: true });
+    gsap.fromTo('.brand-chapter', { borderTopLeftRadius: desktop ? 64 : 32, borderTopRightRadius: desktop ? 64 : 32 }, { borderTopLeftRadius: 0, borderTopRightRadius: 0, ease: 'none', scrollTrigger: { trigger: '.brand-chapter', start: 'top bottom', end: 'top top', scrub: .4 } });
+    gsap.to('.hero-media', { scale: desktop ? .95 : .975, borderRadius: desktop ? 36 : 22, ease: 'none', scrollTrigger: { id: 'mov-hero-recede', trigger: '.brand-chapter', start: 'top bottom', end: 'top 10%', scrub: follow } });
+    // Build the product pin before downstream triggers so their positions include its scroll distance.
+    let focusProduct: (() => void) | undefined;
+    {
+      product.classList.add('cinema-product');
+      const opening = product.querySelector<HTMLElement>('.product-opening')!;
+      const featured = product.querySelector<HTMLElement>('.featured')!;
+      const photo = opening.querySelector<HTMLImageElement>('img')!;
+      let viewport = { width: 1, height: 1, photoWidth: 1, photoHeight: 1 };
+      let destination = { x: 0, y: 0, width: 1, height: 1 };
+      const state = { x: 0, y: 0, sx: 1, sy: 1, round: 0 };
+      const setX = gsap.quickSetter(opening, 'x', 'px');
+      const setY = gsap.quickSetter(opening, 'y', 'px');
+      const setSX = gsap.quickSetter(opening, 'scaleX');
+      const setSY = gsap.quickSetter(opening, 'scaleY');
+      const setPhotoSX = gsap.quickSetter(photo, 'scaleX');
+      const setPhotoSY = gsap.quickSetter(photo, 'scaleY');
+      const setRadius = gsap.quickSetter(opening, 'borderRadius');
+      const measure = () => {
+        // Layout coordinates stay stable even while the section is pinned/transformed.
+        let x = 0, y = 0;
+        let node: HTMLElement | null = featured;
+        while (node && node !== product) { x += node.offsetLeft; y += node.offsetTop; node = node.offsetParent as HTMLElement | null; }
+        destination = { x, y, width: featured.offsetWidth, height: featured.offsetHeight };
+        const width = product.clientWidth, height = product.clientHeight;
+        const ratio = 2049 / 1713;
+        const photoWidth = Math.max(width, height * ratio);
+        viewport = { width, height, photoWidth, photoHeight: photoWidth / ratio };
+        // These layout writes happen once at setup/refresh, never on a scrolling frame.
+        gsap.set(opening, { width, height, transformOrigin: '0 0', opacity: 1 });
+        gsap.set(photo, { width: photoWidth, height: viewport.photoHeight, xPercent: -50, yPercent: -50, transformOrigin: '50% 50%' });
+      };
+      const render = () => {
+        setX(state.x); setY(state.y); setSX(state.sx); setSY(state.sy);
+        // Counter-scale the image: screen-space X/Y scale is identical, preserving its proportions.
+        const cover = Math.max(viewport.width * state.sx / viewport.photoWidth, viewport.height * state.sy / viewport.photoHeight);
+        setPhotoSX(cover / state.sx); setPhotoSY(cover / state.sy);
+        setRadius(`${state.round / state.sx}px / ${state.round / state.sy}px`);
+      };
+      measure();
+      render();
+      const stage = gsap.timeline({
+        defaults: { ease: 'power2.inOut' },
+        scrollTrigger: {
+          id: 'mov-product-scene', trigger: product, start: 'top top', end: () => `+=${innerHeight * (desktop ? 2.05 : 1.65)}`,
+          pin: true, anticipatePin: 1, scrub: follow, invalidateOnRefresh: true,
+          onRefreshInit: measure,
+          onToggle: self => { opening.style.willChange = photo.style.willChange = self.isActive ? 'transform' : ''; },
+        },
+      });
+      stage.fromTo(state,
+        { x: 0, y: 0, sx: 1, sy: 1, round: 0 },
+        { x: () => destination.x, y: () => destination.y, sx: () => destination.width / viewport.width, sy: () => destination.height / viewport.height, round: 22, duration: 1.05, onUpdate: render }, .24)
+        .fromTo('.showcase > .container > .eyebrow, .showcase > .container > h2, .showcase > .container > .description', { opacity: 0, y: 28 }, { opacity: 1, y: 0, stagger: .07, duration: .5 }, .8)
+        .fromTo(featured, { opacity: 0 }, { opacity: 1, duration: .15 }, 1.3)
+        .to(opening, { opacity: 0, duration: .2 }, 1.35)
+        .fromTo('.product-details img', { opacity: 0, y: 100, rotation: 4 }, { opacity: 1, y: 0, rotation: 0, stagger: .16, duration: .65 }, 1.45)
+        .fromTo('.featured-info', { yPercent: 105 }, { yPercent: 0, duration: .5 }, 1.55)
+        .fromTo('.showcase-action', { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: .35 }, 1.95)
+        .to({}, { duration: .32 });
+      // A keyboard user entering a scene sees the complete usable composition immediately.
+      focusProduct = () => { stage.progress(1); };
+      product.addEventListener('focusin', focusProduct);
+    }
+
+    headings.forEach(heading => gsap.fromTo(heading.querySelectorAll('.word-motion'),
+      { yPercent: 112, rotation: 3 },
+      { yPercent: 0, rotation: 0, stagger: .055, ease: 'power2.out', scrollTrigger: { trigger: heading, start: 'top 92%', end: 'top 55%', scrub: follow } }));
+
+    // The whole photographic plane travels: image pixels are never enlarged or cropped further.
+    gsap.to('.hero-content', { y: desktop ? -100 : -35, opacity: .25, ease: 'none', scrollTrigger: { id: 'mov-hero-depth', trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .5 } });
+    const brand = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: '.brand', start: 'top 85%', end: 'bottom 15%', scrub: follow } });
+    brand.fromTo('.brand-photo', { y: desktop ? 70 : 26, rotation: desktop ? -2 : 0 }, { y: desktop ? -35 : 0, rotation: 0, duration: 1 }, 0)
+      .fromTo('.brand-quote', { y: desktop ? 100 : 28 }, { y: desktop ? -40 : 0, duration: 1 }, .05);
+
+    const editorial = gsap.timeline({ scrollTrigger: { id: 'mov-editorial-scene', trigger: '.editorial', start: 'top 92%', end: 'center 48%', scrub: follow } });
+    editorial.fromTo('.editorial-image', { xPercent: desktop ? -12 : 0, y: desktop ? 0 : 40, rotationY: desktop ? -7 : -3, transformPerspective: 1200, transformOrigin: 'right center' }, { xPercent: 0, y: 0, rotationY: 0, ease: 'power2.out', duration: 1 }, 0)
+      .fromTo('.editorial-panel', { xPercent: desktop ? 12 : 0, y: desktop ? 0 : 28, rotationY: desktop ? 7 : 3, transformPerspective: 1200, transformOrigin: 'left center' }, { xPercent: 0, y: 0, rotationY: 0, ease: 'power2.out', duration: 1 }, .06);
+    gsap.fromTo('.experience-main-image', { y: desktop ? 75 : 30, rotation: desktop ? -2 : 0 }, { y: desktop ? -30 : 0, rotation: 0, ease: 'none', scrollTrigger: { trigger: '.experience', start: 'top 85%', end: 'bottom 20%', scrub: follow } });
+    gsap.from('.experience-category, .experience-message, .experience-detail-image', { y: desktop ? 75 : 40, rotationX: desktop ? 6 : 3, transformPerspective: 1100, stagger: .12, ease: 'power2.out', scrollTrigger: { trigger: '.experience-grid', start: 'top 88%', end: 'center 48%', scrub: follow } });
+    gsap.fromTo('.newsletter-inner', { y: 45 }, { y: -12, ease: 'none', scrollTrigger: { trigger: '.newsletter', start: 'top bottom', end: 'bottom 35%', scrub: .6 } });
+    gsap.from('.footer-logo', { yPercent: 45, rotation: -4, opacity: .15, ease: 'power3.out', scrollTrigger: { trigger: '.footer', start: 'top 94%', end: 'top 62%', scrub: .65 } });
+    gsap.from('.footer-inner', { y: desktop ? 75 : 36, ease: 'none', scrollTrigger: { trigger: '.footer', start: 'top bottom', end: 'top 50%', scrub: .5 } });
+
+    const onFocus = (event: FocusEvent) => {
+      const target = event.target as HTMLElement;
+      if (target.closest('.hero')) gsap.set('.hero-content', { opacity: 1 });
+      // Finish text masks for focused sections, keeping labels and controls readable.
+      const section = target.closest('section');
+      if (section) gsap.set(section.querySelectorAll('.word-motion'), { yPercent: 0, rotation: 0 });
+    };
+    document.addEventListener('focusin', onFocus);
+    const refresh = () => ScrollTrigger.refresh();
+    document.fonts.ready.then(refresh);
+    return () => {
+      document.documentElement.classList.remove('cinema-active');
+      product.classList.remove('cinema-product');
+      if (focusProduct) product.removeEventListener('focusin', focusProduct);
+      document.removeEventListener('focusin', onFocus);
+      // Restore authored styles after GSAP has reverted its fromTo starting states.
+      queueMicrotask(() => {
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        document.querySelectorAll<HTMLElement>('.word-motion, .hero-content, .hero-media, .brand-photo, .brand-quote, .featured, .featured-info, .product-details img, .showcase-action, .editorial-image, .editorial-panel, .experience-main-image, .experience-category, .experience-message, .experience-detail-image, .newsletter-inner, .footer-logo, .footer-inner, .showcase > .container > .eyebrow, .showcase > .container > h2, .showcase > .container > .description').forEach(element => {
+          ['transform', 'opacity', 'visibility', 'translate', 'rotate', 'scale'].forEach(property => element.style.removeProperty(property));
+        });
+      });
+    };
+  });
+</script>
+<style is:global>
+  .word-mask { display: inline-block; overflow: clip; vertical-align: bottom; padding-block: .12em; margin-block: -.12em; }
+  .word-motion { display: inline-block; transform-origin: left bottom; }
+  .cinema-active main { overflow-x: clip; }
+  .cinema-active .brand-chapter { position: relative; z-index: 2; background: var(--color-bg); overflow: clip; padding-block-end: 40px; box-shadow: 0 -30px 80px rgb(0 0 0 / .14); }
+  .cinema-active .story-chapter { position: relative; z-index: 4; background: var(--color-bg); margin-block-start: calc(-1 * min(8svh, 72px)); border-radius: 48px 48px 0 0; padding-block-start: 1px; box-shadow: 0 -24px 70px rgb(0 0 0 / .18); }
+  .cinema-active .footer { position: relative; z-index: 2; background: var(--color-bg); margin-block-start: -28px; border-radius: 32px 32px 0 0; }
+  .cinema-active .brand, .cinema-active .experience { perspective: 1100px; }
+  .cinema-active .product-details { overflow: clip; }
+  .cinema-active .hero-media { overflow: clip; transform-origin: center top; }
+  .product-opening { display: none; }
+  .showcase.cinema-product { position: relative; block-size: 100svh; min-block-size: 0; padding-block: 36px; display: grid; align-items: center; overflow: clip; }
+  .cinema-product .product-opening { display: block; position: absolute; inset: 0 auto auto 0; z-index: 3; overflow: hidden; contain: layout paint; pointer-events: none; }
+  .product-opening img { position: absolute; inset: 50% auto auto 50%; max-inline-size: none; object-fit: fill; }
+  .showcase.cinema-product .showcase-grid { margin-block-start: 30px; }
+  .showcase.cinema-product .featured > img { block-size: clamp(300px, 48svh, 510px); }
+  .showcase.cinema-product .product-details img { max-block-size: calc(24svh - 12.5px); }
+  .showcase.cinema-product .featured-info { min-block-size: 105px; }
+  @media (max-width: 1099px), (max-height: 759px) {
+    .showcase.cinema-product { padding-block: 20px; }
+    .showcase.cinema-product .showcase-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; margin-block-start: 16px; }
+    .showcase.cinema-product .featured > img { block-size: clamp(130px, 25svh, 260px); object-position: center 45%; }
+    .showcase.cinema-product .featured-info { position: static; min-block-size: 72px; padding: 12px 16px; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+    .showcase.cinema-product .featured-info h3 { font-size: 1.25rem; margin-block-start: 4px; }
+    .showcase.cinema-product .featured-info .button { min-block-size: 36px; font-size: .875rem; padding-block: 8px; }
+    .showcase.cinema-product .product-category { font-size: .6875rem; }
+    .showcase.cinema-product .product-details { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .showcase.cinema-product .product-details img { block-size: min(14svh, 130px); max-block-size: none; aspect-ratio: auto; }
+    .showcase.cinema-product h2 { font-size: clamp(1.375rem, 4vw, 2rem); }
+    .showcase.cinema-product .eyebrow { margin-block-end: 8px; }
+    .showcase.cinema-product .description { font-size: .8125rem; line-height: 1.4; margin-block-start: 6px; }
+    .showcase.cinema-product .showcase-action { padding-block-start: 8px; }
+    .showcase.cinema-product .showcase-action .button { font-size: 1rem; min-block-size: 36px; padding-block: 8px; }
+    .cinema-active .story-chapter { margin-block-start: calc(-1 * min(10svh, 85px)); border-radius: 28px 28px 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .word-mask { overflow: visible; } }
+</style>

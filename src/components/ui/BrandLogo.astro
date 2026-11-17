@@ -1,0 +1,9 @@
+---
+import originalLogo from '../../../assets/source/brand/preloader.svg?raw';
+const logo = originalLogo.replace(/<\?xml[^>]*\?>/g, '').replace(/<!DOCTYPE[^>]*>/g, '')
+  .replace('<svg ', '<svg class="mov-logo-svg" aria-hidden="true" focusable="false" ');
+---
+<Fragment set:html={logo} />
+<style is:global>
+  .mov-logo-svg { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 870 / 384; }
+</style>

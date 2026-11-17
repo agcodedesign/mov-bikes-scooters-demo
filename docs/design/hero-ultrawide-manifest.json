@@ -1,0 +1,77 @@
+[
+  {
+    "source": "assets/source/hero-ultrawide/mov-ciclista-orla-ultrawide-v1.png",
+    "nativeWidth": 2089,
+    "nativeHeight": 753,
+    "outputs": [
+      {
+        "file": "public/images/hero/mov-ciclista-orla-ultrawide-v1-1280.webp",
+        "width": 1280,
+        "height": 461,
+        "bytes": 138724
+      },
+      {
+        "file": "public/images/hero/mov-ciclista-orla-ultrawide-v1-1920.webp",
+        "width": 1920,
+        "height": 692,
+        "bytes": 242526
+      },
+      {
+        "file": "public/images/hero/mov-ciclista-orla-ultrawide-v1-2089.webp",
+        "width": 2089,
+        "height": 753,
+        "bytes": 272528
+      }
+    ]
+  },
+  {
+    "source": "assets/source/hero-ultrawide/mov-scooter-cidade-ultrawide-v1.png",
+    "nativeWidth": 2089,
+    "nativeHeight": 753,
+    "outputs": [
+      {
+        "file": "public/images/hero/mov-scooter-cidade-ultrawide-v1-1280.webp",
+        "width": 1280,
+        "height": 461,
+        "bytes": 141928
+      },
+      {
+        "file": "public/images/hero/mov-scooter-cidade-ultrawide-v1-1920.webp",
+        "width": 1920,
+        "height": 692,
+        "bytes": 267452
+      },
+      {
+        "file": "public/images/hero/mov-scooter-cidade-ultrawide-v1-2089.webp",
+        "width": 2089,
+        "height": 753,
+        "bytes": 307558
+      }
+    ]
+  },
+  {
+    "source": "assets/source/hero-ultrawide/mov-mobilidade-orla-ultrawide-v1.png",
+    "nativeWidth": 2089,
+    "nativeHeight": 753,
+    "outputs": [
+      {
+        "file": "public/images/hero/mov-mobilidade-orla-ultrawide-v1-1280.webp",
+        "width": 1280,
+        "height": 461,
+        "bytes": 120594
+      },
+      {
+        "file": "public/images/hero/mov-mobilidade-orla-ultrawide-v1-1920.webp",
+        "width": 1920,
+        "height": 692,
+        "bytes": 222986
+      },
+      {
+        "file": "public/images/hero/mov-mobilidade-orla-ultrawide-v1-2089.webp",
+        "width": 2089,
+        "height": 753,
+        "bytes": 254036
+      }
+    ]
+  }
+]

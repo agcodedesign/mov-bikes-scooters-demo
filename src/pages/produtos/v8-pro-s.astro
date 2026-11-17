@@ -1,0 +1,331 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Dialogs from '../../components/layout/Dialogs.astro';
+import Button from '../../components/ui/Button.astro';
+import ResponsiveImage from '../../components/ui/ResponsiveImage.astro';
+import { productParts, productSpecs, productSource, comparisonSource, partLabels } from '../../data/v8-pro-s';
+import { site } from '../../config/site';
+---
+<BaseLayout title="V8 Pro S | Explore cada detalhe — MOV" description="Conheça a V8 Pro S em uma experiência visual interativa. Explore baterias, suspensão, freios, farol e acabamento, com fotografias e especificações pesquisadas." homeMotion={false}>
+  <Header />
+  <main id="conteudo" tabindex="-1" class="product-page">
+    <div class="product-breadcrumb container"><a href="/">Início</a><span aria-hidden="true">/</span><a href="/catalogo/">Catálogo</a><span aria-hidden="true">/</span><span aria-current="page">V8 Pro S</span></div>
+    <section class="product-experience" id="explorar" aria-labelledby="product-title">
+      <div class="product-viewer" data-product-viewer data-active-part="overview">
+        <p class="viewer-hint">Role para explorar cada detalhe.</p>
+        <div class="studio-wordmark" aria-hidden="true">V8 PRO S</div>
+        <img class="product-poster" src="/images/products/mov-v8-pro-s-frontal-1280.webp" width="2049" height="1713" alt="Fotografia do farol e da roda dianteira da V8 Pro S" fetchpriority="high" />
+        <video class="product-film" muted playsinline preload="auto" aria-label="Close-ups da V8 Pro S controlados pela rolagem"><source src="/movies/v8-scrub.mp4" type="video/mp4" /></video>
+        <p class="viewer-loading" role="status">Preparando o filme…</p>
+        <p class="sr-only" role="status" data-model-announcer></p>
+        <nav class="scene-nav" aria-label="Etapas da experiência">{productParts.map(part => <a href={part.id === 'overview' ? '#explorar' : `#tour-${part.id}`} aria-label={partLabels[part.id]} data-scene-link={part.id}>{part.number}</a>)}</nav>
+        <noscript><p class="noscript-note">Explore as fotografias e as informações a seguir.</p></noscript>
+      </div>
+      <div class="product-copy">
+        <article class="product-intro product-step" data-scene-step="overview"><div class="story-card">
+          <p class="eyebrow">Bicicleta elétrica · MOV</p>
+          <h1 id="product-title">V8 <span>Pro S.</span></h1>
+          <h2>A cidade ganha<br />outra perspectiva.</h2>
+          <p class="intro-description">Presença de scrambler, pneus largos e energia para descobrir novos caminhos. Role e conheça cada detalhe de perto.</p>
+          <div class="product-actions"><Button href="#tour-battery">Explorar os detalhes <span aria-hidden="true">↓</span></Button><Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'} variant="text">Falar com a MOV <span aria-hidden="true">↗</span></Button></div>
+          <dl class="product-highlights"><div><dt>Motor</dt><dd>1.000<span> W</span></dd></div><div><dt>Baterias</dt><dd>2 × 15<span> Ah</span></dd></div><div><dt>Pneus</dt><dd>20 × 4,0</dd></div></dl>
+          <p class="configuration-note">Configuração pesquisada. Confirme os detalhes da unidade com a MOV.</p>
+        </div></article>
+        {productParts.slice(1).map(part => <article class="product-step" id={`tour-${part.id}`} data-scene-step={part.id} aria-labelledby={`part-${part.id}-title`}><div class="story-card">
+          <div class="chapter-rule" aria-hidden="true"></div><p class="eyebrow">{part.eyebrow}</p>
+          <h2 id={`part-${part.id}-title`}>{part.title}</h2><p class="part-description">{part.description}</p>
+          <p class="part-stat">{part.stat}<span>{part.statLabel}</span></p>
+          <button type="button" class="part-action" data-part={part.id}>Ir para este close <span aria-hidden="true">↗</span></button>
+          <details class="part-detail"><summary>Sobre este componente</summary><p>{part.detail}</p></details>
+        </div></article>)}
+        <article class="product-step product-outro" data-scene-step="complete"><div class="story-card"><p class="eyebrow">O conjunto completo</p><h2>V8 Pro S.<br />Presença em cada caminho.</h2><p class="part-description">Do farol ao banco, cada detalhe compõe uma bicicleta feita para dar outra perspectiva aos seus trajetos pela cidade.</p></div></article>
+      </div>
+    <section class="product-photos" id="fotos" aria-labelledby="photos-title">
+      <div class="container"><p class="eyebrow">O produto, pelas lentes</p><h2 id="photos-title">A forma encontra<br />o detalhe.</h2><p class="section-description">As fotografias fornecidas pela MOV revelam o acabamento, os componentes e os ângulos que orientaram a experiência.</p>
+        <div class="photo-grid"><figure><ResponsiveImage src="/images/products/mov-v8-pro-s-frontal" widths={[640,960,1280,1920]} width={2049} height={1713} alt="Farol circular com grade, suspensão e pneu dianteiro da V8" sizes="(max-width: 767px) 90vw, 50vw" /><figcaption>Farol, garfo e presença.</figcaption></figure><div><figure><ResponsiveImage src="/images/products/mov-bicicleta-detalhe-traseiro" widths={[640,960,1280]} width={1376} height={768} alt="Amortecedor traseiro, freio a disco, corrente e bateria da V8" sizes="(max-width: 767px) 90vw, 45vw" /><figcaption>O conjunto, visto por perto.</figcaption></figure><figure><ResponsiveImage src="/images/products/mov-bicicleta-vista-superior" widths={[640,960,1280]} width={1376} height={768} alt="Vista superior do banco preto, guidão e painel da V8" sizes="(max-width: 767px) 90vw, 45vw" /><figcaption>Acabamento por outro ângulo.</figcaption></figure></div></div>
+      </div>
+    </section>
+    </section>
+    <section class="product-specs container" id="especificacoes" aria-labelledby="specs-title"><div><p class="eyebrow">Conheça o conjunto</p><h2 id="specs-title">Os detalhes<br />também contam.</h2><p>Uma referência para conhecer a configuração V8 Pro S descrita nas fontes consultadas. Itens podem variar entre versões e fornecedores.</p></div><div><table><caption class="sr-only">Ficha da configuração pesquisada da V8 Pro S</caption><tbody>{productSpecs.map(([label,value]) => <tr><th scope="row">{label}</th><td>{value}</td></tr>)}</tbody></table><p class="specs-source">Fontes: <a href={productSource} target="_blank" rel="noopener noreferrer">OUXI.BR ↗</a> e <a href={comparisonSource} target="_blank" rel="noopener noreferrer">Gotrix ↗</a>. Consultadas em 16/11/2026. Valores anunciados, sujeitos à configuração e às condições de uso. As fontes divergem em autonomia e proteção contra água; esses itens precisam de confirmação da MOV.</p></div></section>
+    <section class="product-faq container" aria-labelledby="faq-title"><h2 id="faq-title">Antes do próximo caminho.</h2><div>
+      <details><summary>Qual é a autonomia da V8 Pro S?</summary><p>A OUXI.BR anuncia 100–120 km no modo elétrico e até 150 km no assistido. A Gotrix informa até 100 km. Esses números variam com a configuração, carga, terreno e modo de condução; confirme a versão disponível com a MOV.</p></details>
+      <details><summary>Como explorar os detalhes?</summary><p>Role para acompanhar os close-ups ou selecione uma etapa na navegação. Ao final, o filme revela a bicicleta inteira.</p></details><details><summary>Como ver as fotografias ampliadas?</summary><p>Selecione uma fotografia para ampliá-la e observar o acabamento de perto.</p></details><details><summary>Como consultar condições e disponibilidade?</summary><p>Fale com a equipe MOV para confirmar a unidade, seus componentes e as condições de compra. A vitrine não realiza checkout nem reserva automática.</p></details>
+    </div></section>
+    <section class="product-final" aria-labelledby="product-final-title"><picture class="product-final-media" aria-hidden="true"><source media="(max-width: 600px)" srcset="/images/hero/mov-ciclista-orla-mobile-v1-768.webp" /><img src="/images/hero/mov-ciclista-orla-ultrawide-v1-1920.webp" srcset="/images/hero/mov-ciclista-orla-ultrawide-v1-1280.webp 1280w, /images/hero/mov-ciclista-orla-ultrawide-v1-1920.webp 1920w, /images/hero/mov-ciclista-orla-ultrawide-v1-2089.webp 2089w" sizes="100vw" width="2089" height="753" alt="" loading="lazy" decoding="async" /></picture><div class="container"><p class="eyebrow">Seu próximo caminho</p><h2 id="product-final-title">Conhecer é o começo.<br />O próximo passo é seu.</h2><p>Converse com a MOV sobre a V8 Pro S e encontre uma opção que faça sentido para a sua rotina.</p><Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'}>Quero conhecer a V8 Pro S <span aria-hidden="true">↗</span></Button><a class="back-link" href="/catalogo/">Voltar ao catálogo →</a></div></section>
+  </main>
+  <dialog class="photo-lightbox" aria-label="Fotografia ampliada"><button type="button" aria-label="Fechar fotografia">Fechar ×</button><img alt="" /></dialog><Footer /><Dialogs />
+</BaseLayout>
+<script>import '../../scripts/product-film';</script>
+<style>
+  .product-page { background: #101715; color: #f7f7f4; }
+  .product-breadcrumb { display: flex; flex-wrap: wrap; gap: 12px; padding-block: 24px 8px; font-size: .8125rem; color: #bdc8c1; }
+  .product-breadcrumb a { text-decoration: none; padding-block: 6px; }
+  .product-breadcrumb span { padding-block: 6px; }
+  .product-experience { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: clamp(32px,5vw,88px); width: min(1600px, calc(100% - 80px)); margin-inline: auto; padding-block: 24px 80px; align-items: start; }
+  .product-viewer { position: sticky; top: 24px; height: calc(100svh - 48px); max-height: 1040px; min-height: 560px; overflow: hidden; border-radius: 28px; border: 1px solid #ffffff14; background: radial-gradient(ellipse at 45% 38%, #34433d 0%, #1b2822 40%, #121b16 75%); }
+  .product-canvas, .product-poster { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; }
+  .product-poster { object-fit: contain; }
+  .product-canvas { opacity: 0; }
+  .product-viewer.is-ready .product-canvas { opacity: 1; }
+  .product-viewer.is-ready .product-poster { opacity: 0; pointer-events: none; }
+  .viewer-toolbar { position: absolute; z-index: 3; inset: 18px 18px auto; display: flex; gap: 4px; width: fit-content; border-radius: 99px; padding: 4px; background: #101715de; border: 1px solid #ffffff20; }
+  .viewer-toolbar button, .viewer-controls button { background: transparent; color: #e7e7e7; border: 0; border-radius: 99px; min-height: 44px; padding: 10px 14px; font-size: .75rem; font-weight: 600; }
+  .viewer-toolbar button[aria-pressed="true"] { background: #e7e7e7; color: #17221d; }
+  .viewer-toolbar button:disabled, .viewer-controls button:disabled { opacity: .45; cursor: default; }
+  .viewer-hint { position: absolute; z-index: 1; top: 84px; left: 24px; color: #aebbb3; font-size: .8125rem; }
+  .viewer-loading { position: absolute; top: 120px; left: 24px; right: 24px; font-size: .875rem; color: #e7e7e7; }
+  .noscript-note { position: absolute; bottom: 24px; left: 24px; right: 24px; color: #e7e7e7; font-size: .875rem; }
+  .product-viewer.is-ready .viewer-loading { display: none; }
+  .viewer-hotspots { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+  .part-hotspot { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 6px; pointer-events: auto; border: 0; color: #17221d; background: transparent; padding: 8px; min-width: 44px; min-height: 44px; border-radius: 99px; }
+  .part-hotspot > span:first-child { display: grid; place-items: center; width: 27px; height: 27px; background: #ffa300; border-radius: 50%; box-shadow: 0 0 0 5px #ffa30024; font-size: 1.25rem; line-height: 1; }
+  .hotspot-name { opacity: 0; padding: 7px 10px; border-radius: 99px; background: #f7f7f4; white-space: nowrap; font-size: .6875rem; font-weight: 700; }
+  .part-hotspot:hover .hotspot-name, .part-hotspot:focus-visible .hotspot-name { opacity: 1; }
+  .part-hotspot[aria-pressed="true"] > span:first-child { background: #f7f7f4; box-shadow: 0 0 0 5px #ffffff30; }
+  .viewer-caption { position: absolute; inset: auto 24px 82px; display: flex; gap: 14px; align-items: start; pointer-events: none; background: linear-gradient(0deg,#121b16ed,#121b1680); padding: 14px 12px; border-radius: 12px; }
+  .viewer-part-number { color: #ffa300; font-size: .6875rem; line-height: 2; }
+  .viewer-part-title { font-size: 1rem; font-weight: 700; margin-bottom: 5px; }
+  .viewer-caption p:last-child { font-size: .75rem; line-height: 1.5; color: #b6c2ba; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .viewer-controls { position: absolute; inset: auto 18px 18px; display: flex; justify-content: space-between; z-index: 3; }
+  .viewer-controls > div { display: flex; gap: 6px; }
+  .viewer-controls button { background: #101715d9; border: 1px solid #ffffff20; }
+  .viewer-controls [data-zoom] { min-width: 44px; font-size: 1.25rem; }
+  .product-copy { min-width: 0; }
+  .product-step { min-height: 88svh; display: flex; flex-direction: column; justify-content: center; padding-block: 64px; scroll-margin-top: 24px; }
+  .product-intro { min-height: calc(100svh - 110px); padding-block: 32px 64px; }
+  .eyebrow { color: #ffa300; font-size: .75rem; letter-spacing: .06em; }
+  h1 { font-size: clamp(4.25rem,7vw,7rem); line-height: .98; font-weight: 800; letter-spacing: -.06em; margin-block: 24px 30px; }
+  h1 span { display: block; }
+  .product-intro h2 { font-size: clamp(1.75rem,2.7vw,2.75rem); }
+  .intro-description, .part-description { color: #c3cec6; font-size: 1.0625rem; line-height: 1.7; margin-block-start: 20px; }
+  .product-actions { display: flex; flex-wrap: wrap; gap: 10px 20px; margin-top: 26px; }
+  .product-actions :global(.button) { font-size: .875rem; }
+  .product-highlights { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; padding: 28px 0 0; margin: 28px 0 0; border-top: 1px solid #ffffff24; }
+  dt { font-size: .6875rem; color: #aebbb3; margin-bottom: 8px; }
+  dd { margin: 0; font-size: clamp(1rem,1.7vw,1.5rem); font-weight: 700; white-space: nowrap; }
+  dd span { font-size: .75rem; font-weight: 400; }
+  .configuration-note, .model-note { font-size: .75rem; color: #afbbb3; line-height: 1.7; margin-top: 20px; }
+  .chapter-rule { width: 56px; height: 3px; background: #ffa300; margin-bottom: 24px; }
+  .product-step:not(.product-intro) h2 { font-size: clamp(2.25rem,3.6vw,3.75rem); line-height: 1.12; margin-top: 18px; }
+  .part-stat { margin-top: 28px; color: #f7f7f4; font-size: clamp(1.875rem,3vw,2.75rem); line-height: 1.2; font-weight: 700; }
+  .part-stat span { display: block; font-size: .8125rem; line-height: 1.5; color: #afbbb3; font-weight: 400; margin-top: 8px; }
+  .part-action { align-self: flex-start; margin-top: 24px; border: 1px solid #6a786f; padding: 12px 18px; border-radius: 99px; background: transparent; color: #f7f7f4; font-size: .875rem; min-height: 44px; }
+  .part-action span { margin-left: 15px; color: #ffa300; }
+  .part-detail { font-size: .8125rem; line-height: 1.7; margin-top: 28px; color: #afbbb3; }
+  .model-note { padding-block: 24px; border-top: 1px solid #ffffff24; }
+  .product-photos { position:relative; z-index:4; margin-block-start:-42svh; border-radius:32px 32px 0 0; background: var(--color-bg); color: var(--color-ink); padding-block: 100px; box-shadow:0 -30px 90px #0005; }
+  .product-photos .eyebrow, .product-specs .eyebrow { color: #955900; }
+  .product-photos h2 { font-size: clamp(2.75rem,5vw,5rem); margin-top: 18px; }
+  .section-description { margin-top: 24px; max-width: 590px; color: var(--color-muted); }
+  .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; align-items: start; }
+  .photo-grid > div { display: grid; gap: 28px; }
+  .photo-grid :global(img) { width: 100%; border-radius: 24px; }
+  figcaption { color: #56645c; font-size: .8125rem; margin-top: 12px; }
+  .product-specs { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; padding-block: 100px; }
+  .product-specs .eyebrow { color: #ffa300; }
+  .product-specs h2 { font-size: clamp(2.5rem,4vw,4rem); margin-top: 20px; }
+  .product-specs > div > p:not(.eyebrow) { color: #afbbb3; line-height: 1.7; margin-top: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+  th, td { text-align: start; padding: 17px 0; border-bottom: 1px solid #ffffff24; vertical-align: top; }
+  th { font-weight: 400; color: #afbbb3; width: 45%; padding-right: 16px; }
+  td { font-weight: 600; }
+  .specs-source { font-size: .75rem; }
+  .specs-source a { color: #e7e7e7; }
+  .product-faq { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; padding-bottom: 100px; }
+  .product-faq h2 { font-size: clamp(2rem,3vw,3rem); max-width: 350px; }
+  details { border-bottom: 1px solid #ffffff24; padding-block: 20px; }
+  summary { font-size: 1rem; font-weight: 600; cursor: pointer; min-height: 32px; }
+  details p { color: #afbbb3; line-height: 1.7; margin-top: 18px; font-size: .9375rem; }
+  .product-final { padding-block: 100px; background: #e7e7e7; color: #17221d; }
+  .product-final .eyebrow { color: #955900; }
+  .product-final h2 { font-size: clamp(2.5rem,4vw,4.5rem); margin-block: 20px; }
+  .product-final p:not(.eyebrow) { max-width: 540px; color: #536157; margin-bottom: 28px; }
+  .back-link { display: inline-flex; align-items: center; min-height: 44px; font-size: .875rem; margin-left: 24px; }
+  @media (prefers-reduced-motion: no-preference) { .product-canvas, .product-poster { transition: opacity 600ms ease; } .part-action, .viewer-controls button { transition: background-color 160ms ease; } .part-action:hover { background: #ffffff12; } }
+  @media (max-width: 1099px) {
+    .product-experience { width: calc(100% - 48px); grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: 28px; }
+    .product-viewer { min-height: 480px; }
+    .product-intro h1 { font-size: 4.25rem; }
+    .intro-description, .part-description { font-size: .9375rem; }
+    .product-specs, .product-faq { gap: 40px; }
+    .product-actions { flex-direction: column; align-items: flex-start; }
+    .product-highlights { grid-template-columns: 1fr; gap: 14px; }
+    .product-highlights > div { display: flex; align-items: baseline; justify-content: space-between; }
+  }
+  @media (max-width: 767px) {
+    .product-photos { margin-block-start:-30svh; }
+    .product-breadcrumb { padding-top: 12px; }
+    .product-experience { display: block; width: 100%; padding-block: 12px 48px; }
+    .product-viewer { top: 0; height: 54svh; min-height: 330px; max-height: 560px; border-radius: 0 0 24px 24px; z-index: 3; border-inline: 0; }
+    .viewer-toolbar { inset: 12px 12px auto; }
+    .viewer-toolbar button { padding: 8px 12px; font-size: .6875rem; }
+    .viewer-hint { top: 72px; left: 20px; font-size: .6875rem; }
+    .viewer-caption { inset: auto 16px 64px; padding: 9px 10px; gap: 10px; }
+    .viewer-caption p:last-child { font-size: .6875rem; -webkit-line-clamp: 1; }
+    .viewer-part-title { font-size: .8125rem; margin-bottom: 3px; }
+    .viewer-controls { inset: auto 12px 10px; }
+    .viewer-loading { top: 100px; left: 20px; font-size: .75rem; }
+    .product-copy { padding-inline: var(--gutter); }
+    .product-step { min-height: 78svh; padding-block: 44px; scroll-margin-top: 56svh; }
+    .product-intro { min-height: auto; padding-block: 32px 48px; }
+    .product-intro h1 { font-size: 4rem; margin-block: 20px; }
+    .product-intro h1 span { display: inline; }
+    .product-intro h2 { font-size: 1.75rem; }
+    .product-highlights { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+    .product-highlights > div { display: block; }
+    .product-highlights dd { font-size: 1.125rem; }
+    .product-actions { flex-direction: row; align-items: center; }
+    .product-step:not(.product-intro) h2 { font-size: 2.25rem; }
+    .part-stat { font-size: 1.875rem; }
+    .hotspot-name { display: none; }
+    .product-photos, .product-specs, .product-final { padding-block: 56px; }
+    .product-photos { margin-block-start:-34svh; border-radius:24px 24px 0 0; }
+    .photo-grid { grid-template-columns: 1fr; gap: 28px; margin-top: 32px; }
+    .photo-grid :global(img) { border-radius: 16px; }
+    .product-specs, .product-faq { grid-template-columns: 1fr; gap: 28px; }
+    .product-faq { padding-bottom: 56px; }
+    th, td { font-size: .8125rem; padding-block: 15px; }
+    .back-link { display: flex; width: fit-content; margin: 16px 0 0; }
+  }
+  /* The product remains in a full-viewport studio; the story passes over it. */
+  .product-breadcrumb { position: absolute; z-index: 4; left: var(--gutter); width: auto; padding: 18px 0; }
+  .product-experience { display: block; position: relative; width: 100%; padding: 0; }
+  .product-viewer { top: 0; z-index: 1; width: 100%; height: 100svh; min-height: 560px; max-height: none; border: 0; border-radius: 0; background: radial-gradient(ellipse at 70% 42%,#35423e 0%,#18211f 43%,#090f0d 85%); }
+  .product-viewer::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg,#080e0cd9,transparent 44%),linear-gradient(0deg,#090f0d99,transparent 22%); }
+  .studio-wordmark { position: absolute; top: 12%; right: 4%; font-size: clamp(5rem,18vw,24rem); font-weight: 800; letter-spacing: -.075em; line-height: 1; color: #ffffff04; pointer-events: none; }
+  .product-copy { position: relative; z-index: 2; margin-top: -100svh; pointer-events: none; }
+  .product-step { min-height: 135svh; width: 100%; padding: 100px max(32px,5vw); justify-content: center; scroll-margin-top: 0; }
+  .product-intro { min-height: 100svh; }
+  .story-card { pointer-events: auto; width: min(33vw,420px); padding-block: 24px; opacity: var(--story-opacity,1); transform: translateY(var(--story-y,0px)); }
+  .product-step:not(.product-intro) .story-card { padding: 28px; border-radius: 22px; background: #0b1310d4; border: 1px solid #ffffff16; backdrop-filter: blur(16px); }
+  .product-intro h1 { font-size: clamp(4rem,6.2vw,6.5rem); margin-block: 20px; }
+  .product-intro h1 span { display: block; }
+  .product-intro h2 { font-size: clamp(1.4rem,2vw,2rem); }
+  .intro-description,.part-description { font-size: clamp(.875rem,1.15vw,1rem); line-height: 1.65; }
+  .product-step:not(.product-intro) h2 { font-size: clamp(2rem,3.15vw,3.5rem); }
+  .product-actions { flex-direction: row; align-items: center; gap: 8px 14px; }
+  .product-highlights { grid-template-columns: repeat(3,minmax(0,1fr)); margin-top: 20px; padding-top: 18px; }
+  .product-highlights > div { display: block; }
+  .part-stat { margin-top: 24px; font-size: 2rem; }
+  .part-action { margin-top: 20px; }
+  .part-detail { margin-top: 18px; padding: 0; border: 0; }
+  .part-detail summary { font-size: .75rem; font-weight: 400; min-height: 44px; padding-block: 12px; }
+  .part-detail p { margin-top: 0; font-size: .75rem; }
+  .configuration-note { font-size: .6875rem; }
+  .viewer-toolbar { inset: 18px 24px auto auto; }
+  .viewer-hint { top: auto; bottom: 27px; left: 5vw; z-index: 3; }
+  .viewer-controls { inset: auto 24px 18px auto; gap: 8px; }
+  .viewer-caption { display: none; z-index: 3; inset: 50% auto auto 5vw; width: min(33vw,420px); transform: translateY(-50%); padding: 24px; background: #0b1310b8; border: 1px solid #ffffff18; backdrop-filter: blur(20px); border-radius: 20px; }
+  .product-viewer[data-mode="free"] .viewer-caption { display: flex; }
+  .viewer-caption p:last-child { display: block; overflow: visible; font-size: .9375rem; line-height: 1.7; }
+  .viewer-part-title { font-size: 2rem; line-height: 1.15; margin-bottom: 18px; }
+  .product-experience:has(.product-viewer[data-mode="free"]) .story-card { visibility: hidden; }
+  .scene-nav { position: absolute; z-index: 3; right: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 3px; }
+  .scene-nav a { display: grid; place-items: center; min-width: 44px; min-height: 44px; font-size: .6875rem; color: #bdc8c1; text-decoration: none; border-radius: 50%; }
+  .scene-nav a[aria-current="step"] { color: #101715; background: #ffa300; }
+  .model-note { margin: 0; padding: 28px 5vw; pointer-events: auto; background: #101715; }
+  @media (max-width: 1099px) and (min-width: 768px) {
+    .story-card,.viewer-caption { width: 37vw; }
+    .product-step { padding-inline: 28px; }
+    .product-intro h1 { font-size: 4.25rem; }
+    .product-actions { flex-direction: column; align-items: start; }
+    .viewer-hint { display: none; }
+    .scene-nav { right: 12px; }
+  }
+  @media (max-width: 767px) {
+    .product-photos { margin-block-start:-30svh; }
+    .product-breadcrumb { display: none; }
+    .product-viewer { height: 100svh; min-height: 620px; border-radius: 0; }
+    .product-viewer::after { background: linear-gradient(0deg,#090f0df5, #090f0de6 25%, transparent 58%); }
+    .product-copy { padding: 0; }
+    .product-step { min-height: 135svh; justify-content: end; padding: 52svh 20px 94px; scroll-margin-top: 0; }
+    .product-intro { min-height: 100svh; padding-top: 42svh; }
+    .story-card { width: min(100%,480px); padding: 16px 0 0; }
+    .product-step:not(.product-intro) .story-card { padding: 20px; background: #0b1310d9; }
+    .product-intro h1 { font-size: 3.15rem; margin: 8px 0 12px; }
+    .product-intro h1 span { display: inline; }
+    .product-intro h2 { font-size: 1.25rem; }
+    .product-intro h2 br { display: none; }
+    .intro-description,.part-description { font-size: .875rem; margin-top: 12px; }
+    .product-intro .intro-description { max-width: 38ch; }
+    .product-actions { margin-top: 16px; gap: 6px 12px; }
+    .product-highlights { gap: 12px; margin-top: 16px; padding-top: 14px; }
+    .product-highlights dd { font-size: 1rem; }
+    .configuration-note { margin-top: 10px; }
+    .chapter-rule { margin-bottom: 14px; }
+    .product-step:not(.product-intro) h2 { font-size: 1.875rem; margin-top: 12px; }
+    .part-stat { font-size: 1.5rem; margin-top: 16px; }
+    .part-stat span { font-size: .75rem; margin-top: 4px; }
+    .part-action { margin-top: 14px; }
+    .part-detail { margin-top: 6px; }
+    .viewer-toolbar { inset: 12px 12px auto auto; }
+    .viewer-toolbar button { font-size: .6875rem; padding: 8px 12px; }
+    .viewer-hint { display: none; }
+    .viewer-controls { inset: auto 12px 12px; justify-content: space-between; gap: 4px; }
+    .viewer-controls button { font-size: .6875rem; padding-inline: 10px; }
+    .viewer-controls [data-zoom] { font-size: 1.125rem; }
+    .viewer-caption { inset: auto 20px 90px; transform: none; width: auto; padding: 20px; }
+    .viewer-part-title { font-size: 1.75rem; }
+    .viewer-caption p:last-child { font-size: .875rem; }
+    .scene-nav { flex-direction: row; top: 68px; right: 8px; transform: none; gap: 0; }
+    .scene-nav a { min-width: 36px; min-height: 36px; font-size: .625rem; }
+    .studio-wordmark { top: 15%; font-size: 22vw; }
+    .model-note { padding: 24px 20px; }
+  }
+  @media (max-height: 740px) and (min-width: 768px) {
+    .product-intro h1 { font-size: 3.75rem; }
+    .intro-description { font-size: .875rem; }
+    .story-card { padding-block: 10px; }
+  }
+
+  .product-film { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .product-viewer.is-ready .product-film { opacity:1; }
+  .product-step:not(.product-intro) .story-card { background:linear-gradient(135deg,#ffffff20,#ffffff08); backdrop-filter:blur(24px) saturate(130%); -webkit-backdrop-filter:blur(24px) saturate(130%); border:1px solid #ffffff32; box-shadow:0 16px 56px #00000030,inset 0 1px 0 #ffffff18; }
+  .product-viewer::after { z-index:1; background:linear-gradient(90deg,#07100bba,transparent 65%),linear-gradient(0deg,#07100b80,transparent 35%); }
+  @media(max-width:767px){ .product-film { object-fit:contain; object-position:center 15%; } .product-viewer::after { background:linear-gradient(0deg,#090f0df2,#090f0dc0 35%,transparent 70%); } }
+
+  .story-card { box-sizing:border-box; min-inline-size:0; overflow-wrap:break-word; }
+  .product-step:not(.product-intro) .story-card { inline-size:min(100%,460px); display:flex; flex-direction:column; gap:16px; padding:clamp(20px,3vw,32px); }
+  .story-card > * { min-inline-size:0; max-inline-size:100%; }
+  .product-step:not(.product-intro) h2 { font-size:clamp(1.75rem,2.65vw,2.75rem); line-height:1.25; letter-spacing:-.02em; text-wrap:balance; margin:0; }
+  .story-card .eyebrow { font-size:.75rem; line-height:1.5; letter-spacing:.05em; }
+  .story-card .part-description { font-size:1rem; line-height:1.6; margin:0; text-wrap:pretty; }
+  .story-card .part-stat { font-size:1.75rem; line-height:1.25; margin:8px 0 0; }
+  .story-card .part-stat span { font-size:.8125rem; line-height:1.5; }
+  .story-card .part-detail { margin:0; }
+  .story-card .part-detail p { font-size:.875rem; line-height:1.6; }
+  .chapter-rule { margin:0; }
+  .part-action { display:none; }
+  .product-outro { min-height:120svh; }
+  .photo-grid figure { cursor:zoom-in; }
+  .photo-lightbox { border:1px solid #ffffff30; border-radius:16px; padding:56px 16px 16px; background:#101715; color:white; max-width:96vw; max-height:94dvh; }
+  .photo-lightbox::backdrop { background:#000d; backdrop-filter:blur(12px); }
+  .photo-lightbox img { display:block; max-width:90vw; max-height:78dvh; object-fit:contain; }
+  .photo-lightbox button { position:absolute; inset:8px 12px auto auto; min-height:44px; padding:8px 16px; border:1px solid #ffffff60; border-radius:30px; background:#ffffff18; color:white; }
+  @media(min-width:768px){.product-step:not(.product-intro) .story-card { inline-size:min(37vw,460px); }}
+  @media(max-width:767px){.product-step { padding-inline:16px; padding-bottom:80px; } .product-step:not(.product-intro) .story-card { gap:12px; } .story-card .part-description { font-size:.9375rem; } }
+
+  .product-final { position:relative; isolation:isolate; overflow:hidden; min-height:clamp(520px,36vw,720px); display:flex; align-items:center; background:#101715; color:#f7f7f4; }
+  .product-final-media { position:absolute; inset:0; z-index:-2; }
+  .product-final-media img { width:100%; height:100%; object-fit:cover; object-position:center; }
+  .product-final::before { content:''; position:absolute; inset:0; z-index:-1; background:linear-gradient(90deg,#07100bef 0%,#07100bc9 35%,#07100b38 70%,#07100b14); }
+  .product-final .eyebrow { color:#ffa300; }
+  .product-final h2 { max-width:850px; font-size:clamp(2.5rem,4vw,4.5rem); }
+  .product-final p:not(.eyebrow) { color:#e0e6e1; }
+  .product-final .back-link { color:#f7f7f4; }
+  @media(max-width:767px) { .product-final { min-height:760px; align-items:flex-end; padding-block:280px 56px; } .product-final::before { background:linear-gradient(0deg,#07100bf5 0%,#07100bda 38%,#07100b14 85%); } .product-final-media img { object-position:center 35%; } }
+
+  /* Match the landing page content rail while keeping the film full bleed. */
+  .product-step { padding-inline:max(var(--gutter), calc((100% - var(--content-width)) / 2)); }
+  .product-breadcrumb { left:max(var(--gutter), calc((100% - var(--content-width)) / 2)); }
+  .viewer-hint { left:max(var(--gutter), calc((100% - var(--content-width)) / 2)); }
+  .viewer-caption { left:max(var(--gutter), calc((100% - var(--content-width)) / 2)); }
+
+  .product-page { --content-width:1600px; --gutter:40px; }
+  @media(max-width:1099px) { .product-page { --gutter:clamp(40px,5vw,96px); } }
+  @media(max-width:600px) { .product-page { --gutter:20px; } }
+</style>
+
+
