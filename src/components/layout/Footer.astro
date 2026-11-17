@@ -2,7 +2,6 @@
 import Button from '../ui/Button.astro';
 import { site } from '../../config/site';
 const isHome = Astro.url.pathname === '/';
-const homeHref = (hash: string) => isHome ? hash : `/${hash}`;
 ---
 <footer class="footer" id="contato">
   <div class="footer-inner">
