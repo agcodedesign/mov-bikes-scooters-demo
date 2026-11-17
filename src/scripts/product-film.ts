@@ -10,12 +10,12 @@ if(host){
   let anchors:number[]=[];
   const measure=()=>{anchors=chapters.map(chapter=>{const card=chapter.querySelector<HTMLElement>('.story-card')!;return card.getBoundingClientRect().top+scrollY+card.offsetHeight/2;});};
   const update=()=>{
-    const focus=scrollY+innerHeight*(innerWidth<768?.7:.5);
+    const focus=scrollY+host.clientHeight*(innerWidth<768?.76:.5);
 
     let i=0;while(i<anchors.length-1&&focus>=anchors[i+1])i++;
     const next=Math.min(i+1,times.length-1);
     const t=next===i?0:Math.max(0,Math.min(1,(focus-anchors[i])/(anchors[next]-anchors[i])));
-    const transition=t*t*(3-2*t);
+    const transition=t;
     wanted=reduced.matches?times[t>.5?next:i]:times[i]+(times[next]-times[i])*transition;
     const active=chapters[t>.5?next:i].dataset.sceneStep!;host.dataset.activePart=active;
     host.querySelectorAll<HTMLElement>('[data-scene-link]').forEach(link=>{if(link.dataset.sceneLink===active)link.setAttribute('aria-current','step');else link.removeAttribute('aria-current');});
@@ -25,7 +25,7 @@ if(host){
   video.addEventListener('loadedmetadata',()=>{ready=true;host.dataset.sceneState='ready';host.classList.add('is-ready');update();});
   video.addEventListener('error',fallback);
   if(video.readyState>=1){ready=true;host.classList.add('is-ready');host.dataset.sceneState='ready';}
-  const go=(id:string)=>{const card=chapters.find(c=>c.dataset.sceneStep===id)?.querySelector<HTMLElement>('.story-card');if(card)scrollTo({top:card.getBoundingClientRect().top+scrollY+card.offsetHeight/2-innerHeight*(innerWidth<768?.7:.5),behavior:reduced.matches?'instant':'smooth'});};
+  const go=(id:string)=>{const card=chapters.find(c=>c.dataset.sceneStep===id)?.querySelector<HTMLElement>('.story-card');if(card)scrollTo({top:card.getBoundingClientRect().top+scrollY+card.offsetHeight/2-host.clientHeight*(innerWidth<768?.76:.5),behavior:reduced.matches?'instant':'smooth'});};
   document.querySelectorAll<HTMLButtonElement>('[data-part]').forEach(button=>button.addEventListener('click',()=>go(button.dataset.part!)));
   document.querySelectorAll<HTMLAnchorElement>('[data-scene-link],.product-actions a[href^="#tour-"]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();go(link.dataset.sceneLink??link.hash.replace('#tour-',''));}));
   addEventListener('scroll',update,{passive:true});addEventListener('resize',()=>{measure();update();});document.addEventListener('mov:intro-ready',()=>{measure();update();});new ResizeObserver(()=>{measure();update();}).observe(document.querySelector('.product-copy')!);reduced.addEventListener('change',update);measure();update();
