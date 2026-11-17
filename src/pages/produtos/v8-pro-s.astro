@@ -13,11 +13,11 @@ import { site } from '../../config/site';
   <main id="conteudo" tabindex="-1" class="product-page">
     <div class="product-breadcrumb container"><a href="/">Início</a><span aria-hidden="true">/</span><a href="/catalogo/">Catálogo</a><span aria-hidden="true">/</span><span aria-current="page">V8 Pro S</span></div>
     <section class="product-experience" id="explorar" aria-labelledby="product-title">
-      <div class="product-viewer" data-product-viewer data-active-part="overview">
+      <div class="product-viewer" data-product-viewer data-active-part="overview" data-film-mobile-times="0,2,3,4,5.3,6.9,8,9.95">
         <p class="viewer-hint">Role para explorar cada detalhe.</p>
         <div class="studio-wordmark" aria-hidden="true">V8 PRO S</div>
         <img class="product-poster" src="/images/products/mov-v8-pro-s-frontal-1280.webp" width="2049" height="1713" alt="Fotografia do farol e da roda dianteira da V8 Pro S" fetchpriority="high" />
-        <video class="product-film" muted playsinline preload="auto" aria-label="Close-ups da V8 Pro S controlados pela rolagem"><source src="/movies/v8-scrub.mp4" type="video/mp4" /></video>
+        <video class="product-film" muted playsinline preload="auto" aria-label="Close-ups da V8 Pro S controlados pela rolagem"><source media="(max-width: 767px)" src="/movies/v8-vertical-scrub.mp4" type="video/mp4" /><source src="/movies/v8-scrub.mp4" type="video/mp4" /></video>
         <p class="viewer-loading" role="status">Preparando o filme…</p>
         <p class="sr-only" role="status" data-model-announcer></p>
         <nav class="scene-nav" aria-label="Etapas da experiência">{productParts.map(part => <a href={part.id === 'overview' ? '#explorar' : `#tour-${part.id}`} aria-label={partLabels[part.id]} data-scene-link={part.id}>{part.number}</a>)}</nav>
@@ -345,6 +345,7 @@ import { site } from '../../config/site';
     .scene-nav a { min-width:40px; min-height:40px; }
     .product-photos { margin-block-start:0; border-radius:24px 24px 0 0; }
   }
+@media(max-width:767px) { .product-film { object-position:center; } }
 </style>
 
 

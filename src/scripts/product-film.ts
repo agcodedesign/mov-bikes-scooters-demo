@@ -2,7 +2,7 @@ const host=document.querySelector<HTMLElement>('[data-product-viewer]');
 if(host){
   const video=host.querySelector<HTMLVideoElement>('video')!;
   const chapters=[...document.querySelectorAll<HTMLElement>('[data-scene-step]')];
-  const times=(host.dataset.filmTimes??'0,1.45,2.65,3.85,5.05,6.25,7.45,9.95').split(',').map(Number);
+  const times=((innerWidth<768?host.dataset.filmMobileTimes:undefined)??host.dataset.filmTimes??'0,1.45,2.65,3.85,5.05,6.25,7.45,9.95').split(',').map(Number);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   let wanted=0,frame=0,ready=false;
   const seek=()=>{frame=0;if(!ready||video.seeking)return;if(Math.abs(video.currentTime-wanted)>.035)video.currentTime=Math.min(wanted,video.duration-.05);};
