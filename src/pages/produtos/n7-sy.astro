@@ -349,6 +349,11 @@ const photoWidths=[640,960,1280,1920];
     .scene-nav a { min-width:40px; min-height:40px; }
     .product-photos { margin-block-start:0; border-radius:24px 24px 0 0; }
   }
+  /* Let the last card clear the viewport before the gallery covers the pinned film. */
+  .product-copy { padding-block-end: calc(142svh + 16px); }
+  @media (max-width: 767px) {
+    .product-copy { padding-block-end: calc(100svh + 16px); }
+  }
 </style>
 
 
