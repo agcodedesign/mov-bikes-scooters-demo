@@ -4,6 +4,7 @@ import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import Dialogs from '../../components/layout/Dialogs.astro';
 import Button from '../../components/ui/Button.astro';
+import PurchaseBenefits from '../../components/sections/PurchaseBenefits.astro';
 import ResponsiveImage from '../../components/ui/ResponsiveImage.astro';
 import { productParts, productSpecs, productSource, comparisonSource, partLabels } from '../../data/v8-pro-s';
 import { v8Offer } from '../../data/v8-offer';
@@ -30,9 +31,18 @@ import { site } from '../../config/site';
           <h1 id="product-title">V8 <span>Pro S.</span></h1>
           <h2>A cidade ganha<br />outra perspectiva.</h2>
           <p class="intro-description">Presença de scrambler, pneus largos e energia para descobrir novos caminhos. Role e conheça cada detalhe de perto.</p>
-          <div class="product-actions"><Button href="#tour-battery">Explorar os detalhes <span aria-hidden="true">↓</span></Button><Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'} variant="text">Falar com a MOV <span aria-hidden="true">↗</span></Button></div>
+          <div class="purchase-options" id="comprar" role="region" aria-label="Preço e condições de compra">
+            <p class="purchase-price">{v8Offer.price}</p>
+            <p class="payment-detail">No cartão em até {v8Offer.installments}x de {v8Offer.installment}</p>
+            <p class="purchase-discount"><span>Pix ou dinheiro</span><strong>{v8Offer.discountPercent}% de desconto à vista</strong></p>
+          </div>
           <dl class="product-highlights"><div><dt>Motor</dt><dd>1.000<span> W</span></dd></div><div><dt>Baterias</dt><dd>2 × 15<span> Ah</span></dd></div><div><dt>Pneus</dt><dd>20 × 4,0</dd></div></dl>
           <p class="configuration-note">Configuração pesquisada. Confirme os detalhes da unidade com a MOV.</p>
+          <div class="product-actions">
+            <Button href="#tour-battery">Explorar os detalhes <span aria-hidden="true">↓</span></Button>
+            <Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'} variant="text">Falar com a MOV <span aria-hidden="true">↗</span></Button>
+            {site.whatsapp && <Button href={site.whatsapp + '?text=' + encodeURIComponent(v8Offer.message)}>Comprar pelo WhatsApp <span aria-hidden="true">↗</span></Button>}
+          </div>
         </div></article>
         {productParts.slice(1).map(part => <article class="product-step" id={`tour-${part.id}`} data-scene-step={part.id} aria-labelledby={`part-${part.id}-title`}><div class="story-card">
           <div class="chapter-rule" aria-hidden="true"></div><p class="eyebrow">{part.eyebrow}</p>
@@ -49,30 +59,16 @@ import { site } from '../../config/site';
       </div>
     </section>
     </section>
-    <section class="purchase container" id="comprar" aria-labelledby="purchase-title">
-      <div>
-        <p class="eyebrow">Pre?o e pagamento</p>
-        <h2 id="purchase-title">{v8Offer.model}</h2>
-        <p>Escolha como pagar e confirme a disponibilidade com a MOV.</p>
-      </div>
-      <div class="purchase-options">
-        <dl>
-          <div><dt>Cartão</dt><dd>{v8Offer.price}</dd><dd class="payment-detail">Até {v8Offer.installments}x de {v8Offer.installment}</dd></div>
-          <div><dt>Pix ou dinheiro</dt><dd>{v8Offer.cash}</dd><dd class="payment-detail">{v8Offer.discountPercent}% de desconto ? vista</dd></div>
-        </dl>
-        {site.whatsapp ? (
-          <Button href={site.whatsapp + '?text=' + encodeURIComponent(v8Offer.message)}>Comprar pelo WhatsApp <span aria-hidden="true">&#8594;</span></Button>
-        ) : (
-          <p class="payment-detail">WhatsApp de vendas indisponível no momento.</p>
-        )}
-      </div>
-    </section>
+    <PurchaseBenefits
+      payment={{ title: `Parcele em até ${v8Offer.installments}x`, description: `No cartão ou com ${v8Offer.discountPercent}% de desconto à vista no Pix ou dinheiro.` }}
+      warranty={{ title: 'Garantia', description: 'Confirme a cobertura e o prazo com a MOV.' }}
+    />
     <section class="product-specs container" id="especificacoes" aria-labelledby="specs-title"><div><p class="eyebrow">Conheça o conjunto</p><h2 id="specs-title">Os detalhes<br />também contam.</h2><p>Uma referência para conhecer a configuração V8 Pro S descrita nas fontes consultadas. Itens podem variar entre versões e fornecedores.</p></div><div><table><caption class="sr-only">Ficha da configuração pesquisada da V8 Pro S</caption><tbody>{productSpecs.map(([label,value]) => <tr><th scope="row">{label}</th><td>{value}</td></tr>)}</tbody></table><p class="specs-source">Fontes: <a href={productSource} target="_blank" rel="noopener noreferrer">OUXI.BR ↗</a> e <a href={comparisonSource} target="_blank" rel="noopener noreferrer">Gotrix ↗</a>. Consultadas em 16/11/2026. Valores anunciados, sujeitos à configuração e às condições de uso. As fontes divergem em autonomia e proteção contra água; esses itens precisam de confirmação da MOV.</p></div></section>
     <section class="product-faq container" aria-labelledby="faq-title"><h2 id="faq-title">Antes do próximo caminho.</h2><div>
       <details><summary>Qual é a autonomia da V8 Pro S?</summary><p>A OUXI.BR anuncia 100–120 km no modo elétrico e até 150 km no assistido. A Gotrix informa até 100 km. Esses números variam com a configuração, carga, terreno e modo de condução; confirme a versão disponível com a MOV.</p></details>
       <details><summary>Como explorar os detalhes?</summary><p>Role para acompanhar os close-ups ou selecione uma etapa na navegação. Ao final, o filme revela a bicicleta inteira.</p></details><details><summary>Como ver as fotografias ampliadas?</summary><p>Selecione uma fotografia para ampliá-la e observar o acabamento de perto.</p></details><details><summary>Como consultar condições e disponibilidade?</summary><p>Fale com a equipe MOV para confirmar a unidade, seus componentes e as condições de compra. A vitrine não realiza checkout nem reserva automática.</p></details>
     </div></section>
-    <section class="product-final" aria-labelledby="product-final-title"><picture class="product-final-media" aria-hidden="true"><source media="(max-width: 600px)" srcset="/images/hero/mov-ciclista-orla-mobile-v1-768.webp" /><img src="/images/hero/mov-ciclista-orla-ultrawide-v1-1920.webp" srcset="/images/hero/mov-ciclista-orla-ultrawide-v1-1280.webp 1280w, /images/hero/mov-ciclista-orla-ultrawide-v1-1920.webp 1920w, /images/hero/mov-ciclista-orla-ultrawide-v1-2089.webp 2089w" sizes="100vw" width="2089" height="753" alt="" loading="lazy" decoding="async" /></picture><div class="container"><p class="eyebrow">Seu próximo caminho</p><h2 id="product-final-title">Conhecer é o começo.<br />O próximo passo é seu.</h2><p>Converse com a MOV sobre a V8 Pro S e encontre uma opção que faça sentido para a sua rotina.</p><Button href="#comprar">Ver pre?o e pagamento <span aria-hidden="true">↗</span></Button><a class="back-link" href="/catalogo/">Voltar ao catálogo →</a></div></section>
+    <section class="product-final" aria-labelledby="product-final-title"><picture class="product-final-media" aria-hidden="true"><source media="(max-width: 600px)" srcset="/images/hero/mov-ciclista-orla-mobile-v1-768.webp" /><img src="/images/hero/mov-ciclista-orla-ultrawide-v1-1920.webp" srcset="/images/hero/mov-ciclista-orla-ultrawide-v1-1280.webp 1280w, /images/hero/mov-ciclista-orla-ultrawide-v1-1920.webp 1920w, /images/hero/mov-ciclista-orla-ultrawide-v1-2089.webp 2089w" sizes="100vw" width="2089" height="753" alt="" loading="lazy" decoding="async" /></picture><div class="container"><p class="eyebrow">Seu próximo caminho</p><h2 id="product-final-title">Conhecer é o começo.<br />O próximo passo é seu.</h2><p>Converse com a MOV sobre a V8 Pro S e encontre uma opção que faça sentido para a sua rotina.</p><Button href="#comprar">Ver preço e pagamento <span aria-hidden="true">↗</span></Button><a class="back-link" href="/catalogo/">Voltar ao catálogo →</a></div></section>
   </main>
   <dialog class="photo-lightbox" aria-label="Fotografia ampliada"><button type="button" aria-label="Fechar fotografia">Fechar ×</button><img alt="" /></dialog><Footer /><Dialogs />
 </BaseLayout>
@@ -370,17 +366,36 @@ import { site } from '../../config/site';
   @media (max-width: 767px) {
     .product-copy { padding-block-end: calc(100svh + 16px); }
   }
-  .purchase { display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:clamp(24px,5vw,72px); margin-block-start:clamp(40px,7vw,100px); padding:clamp(24px,4vw,56px); border:1px solid #ffffff24; border-radius:24px; background:#18241e; }
-  .purchase .eyebrow { color:var(--color-accent); }
-  .purchase h2 { margin-block:12px; }
-  .purchase p,.purchase .payment-detail { color:#cbd5ce; }
-  .purchase-options dl { display:flex; flex-wrap:wrap; gap:24px 40px; margin:0 0 24px; }
-  .purchase-options dd { white-space:normal; font-variant-numeric:tabular-nums; }
-  .purchase-options .payment-detail { font-size:.875rem; font-weight:400; }
-  @media(max-width:767px) { .purchase { grid-template-columns:minmax(0,1fr); } }
+  .purchase-options {
+    margin-block-start: 20px;
+    scroll-margin-block-start: 24px;
+  }
+  .purchase-options .purchase-price {
+    color: var(--color-accent);
+    font-size: clamp(1.625rem, 2.3vw, 2.125rem);
+    line-height: 1.12;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .purchase-options .payment-detail { margin-block-start: 4px; color: #cbd5ce; font-size: .8125rem; }
+  .purchase-discount {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 12px;
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    margin-block-start: 12px;
+    padding: 8px 12px;
+    border: 1px solid #ffa30045;
+    border-radius: 10px;
+    background: #101715bf;
+    font-size: .8125rem;
+  }
+  .purchase-discount strong { color: var(--color-accent); }
+
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .product-photos > .container, .purchase, .product-specs, .product-faq, .product-final > .container {
+      .product-photos > .container, .product-specs, .product-faq, .product-final > .container {
         animation: reveal-content linear both;
         animation-timeline: view();
         animation-range: entry 0% entry 65%;

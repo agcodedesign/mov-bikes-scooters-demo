@@ -9,7 +9,6 @@ export const v8Offer = {
   price: brl(price),
   installments,
   installment: brl(price / installments),
-  cash: brl(price * (1 - discount)),
   discountPercent: discount * 100,
-  message: `Olá! Quero comprar a ${model}, anunciada por ${brl(price)} no cartão em até ${installments}x ou ${brl(price * (1 - discount))} no Pix ou dinheiro. Podem confirmar a disponibilidade?`,
+  message: `Olá! Quero comprar a ${model}, anunciada por ${brl(price)}, com até ${installments}x no cartão ou ${discount * 100}% de desconto à vista no Pix ou dinheiro. Podem confirmar a disponibilidade?`,
 };

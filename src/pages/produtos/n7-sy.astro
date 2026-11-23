@@ -4,6 +4,7 @@ import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import Dialogs from '../../components/layout/Dialogs.astro';
 import Button from '../../components/ui/Button.astro';
+import PurchaseBenefits from '../../components/sections/PurchaseBenefits.astro';
 import ResponsiveImage from '../../components/ui/ResponsiveImage.astro';
 import { productParts, productSpecs, productSource, comparisonSource, lightingSource, partLabels, productPhotos } from '../../data/sy-n7';
 import { n7Offer } from '../../data/sy-n7';
@@ -32,9 +33,19 @@ const photoWidths=[640,960,1280,1920];
           <h1 id="product-title">SY <span>N7.</span></h1>
           <h2>Um jeito mais leve<br />de seguir pela cidade.</h2>
           <p class="intro-description">Estrutura reforçada, bateria removível e motor de 1.000 W: conheça de perto os detalhes da San Yang N7 e os dados anunciados para o modelo.</p>
-          <div class="product-actions"><Button href="#tour-frame">Explorar a SY N7 <span aria-hidden="true">↓</span></Button><Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'} variant="text">Falar com a MOV <span aria-hidden="true">↗</span></Button></div>
+          <div class="purchase-options" id="comprar" role="region" aria-label="Preço e condições de compra">
+            <dl>
+              <div><dt>Preço</dt><dd class="purchase-price">{n7Offer.price}</dd></div>
+              <div><dt>Garantia</dt><dd>6 meses</dd><dd class="payment-detail">Motor, bateria e módulo</dd></div>
+            </dl>
+          </div>
           <dl class="product-highlights"><div><dt>Motor</dt><dd>1.000<span> W</span></dd></div><div><dt>Velocidade*</dt><dd>32<span> km/h</span></dd></div><div><dt>Autonomia*</dt><dd>50<span> km</span></dd></div></dl>
           <p class="configuration-note">*Valores anunciados por revendedores. Autonomia e configuração variam conforme uso e unidade.</p>
+          <div class="product-actions">
+            <Button href="#tour-frame">Explorar a SY N7 <span aria-hidden="true">↓</span></Button>
+            <Button href={site.whatsapp} dialog={site.whatsapp ? undefined : 'contato'} variant="text">Falar com a MOV <span aria-hidden="true">↗</span></Button>
+            {site.whatsapp && <Button href={site.whatsapp + '?text=' + encodeURIComponent(n7Offer.message)}>Comprar pelo WhatsApp <span aria-hidden="true">↗</span></Button>}
+          </div>
         </div></article>
         {productParts.slice(1).map(part => <article class="product-step" id={`tour-${part.id}`} data-scene-step={part.id} aria-labelledby={`part-${part.id}-title`}><div class="story-card">
           <div class="chapter-rule" aria-hidden="true"></div><p class="eyebrow">{part.eyebrow}</p>
@@ -51,24 +62,10 @@ const photoWidths=[640,960,1280,1920];
       </div>
     </section>
     </section>
-    <section class="purchase container" id="comprar" aria-labelledby="purchase-title">
-      <div>
-        <p class="eyebrow">Preço e garantia</p>
-        <h2 id="purchase-title">{n7Offer.model}</h2>
-        <p>Confirme a disponibilidade e as formas de pagamento com a MOV.</p>
-      </div>
-      <div class="purchase-options">
-        <dl>
-          <div><dt>Preço</dt><dd>{n7Offer.price}</dd></div>
-          <div><dt>Garantia</dt><dd>6 meses</dd><dd class="payment-detail">Motor, bateria e módulo</dd></div>
-        </dl>
-        {site.whatsapp ? (
-          <Button href={site.whatsapp + '?text=' + encodeURIComponent(n7Offer.message)}>Comprar pelo WhatsApp <span aria-hidden="true">&#8594;</span></Button>
-        ) : (
-          <p class="payment-detail">WhatsApp de vendas indisponível no momento.</p>
-        )}
-      </div>
-    </section>
+    <PurchaseBenefits
+      payment={{ title: 'Formas de pagamento', description: 'Consulte as opções de pagamento da N7 com a MOV.' }}
+      warranty={{ title: 'Garantia de 6 meses', description: 'Cobertura para motor, bateria e módulo.' }}
+    />
     <section class="product-specs container" id="especificacoes" aria-labelledby="specs-title"><div><p class="eyebrow">Conheça o conjunto</p><h2 id="specs-title">Os detalhes<br />também contam.</h2><p>Uma referência da San Yang N7 a partir das especificações anunciadas por revendedores. A MOV pode confirmar a configuração da unidade disponível.</p></div><div><table><caption class="sr-only">Ficha de especificações anunciadas para a San Yang N7</caption><tbody>{productSpecs.map(([label,value]) => <tr><th scope="row">{label}</th><td>{value}</td></tr>)}</tbody></table><p class="specs-source">Fontes: <a href={productSource} target="_blank" rel="noopener noreferrer">R1 Elétricos ↗</a>, <a href={comparisonSource} target="_blank" rel="noopener noreferrer">Marca FCF ↗</a> e <a href={lightingSource} target="_blank" rel="noopener noreferrer">Eletron Motos &amp; Bike ↗</a>. Consultadas em 17/11/2026. Potência, velocidade e autonomia são dados publicados pelos revendedores; confirme a versão, a capacidade da bateria e os acessórios que acompanham a unidade com a MOV.</p></div></section>
     <section class="product-faq container" aria-labelledby="faq-title"><h2 id="faq-title">Antes do próximo caminho.</h2><div>
       <details><summary>Qual é a autonomia anunciada da N7?</summary><p>As listagens consultadas informam até 50 km por carga. O alcance real pode mudar com o peso, o relevo, a velocidade e o modo de uso.</p></details>
@@ -375,7 +372,7 @@ const photoWidths=[640,960,1280,1920];
   }
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
-      .product-photos > .container, .purchase, .product-specs, .product-faq, .product-final > .container {
+      .product-photos > .container, .product-specs, .product-faq, .product-final > .container {
         animation: reveal-content linear both;
         animation-timeline: view();
         animation-range: entry 0% entry 65%;
@@ -386,14 +383,21 @@ const photoWidths=[640,960,1280,1920];
     from { opacity: .35; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  .purchase { display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:clamp(24px,5vw,72px); margin-block-start:clamp(40px,7vw,100px); padding:clamp(24px,4vw,56px); border:1px solid #ffffff24; border-radius:24px; background:#18241e; }
-  .purchase .eyebrow { color:var(--color-accent); }
-  .purchase h2 { margin-block:12px; }
-  .purchase p,.purchase .payment-detail { color:#cbd5ce; }
-  .purchase-options dl { display:flex; flex-wrap:wrap; gap:24px 40px; margin:0 0 24px; }
-  .purchase-options dd { white-space:normal; font-variant-numeric:tabular-nums; }
-  .purchase-options .payment-detail { font-size:.875rem; font-weight:400; }
-  @media(max-width:767px) { .purchase { grid-template-columns:minmax(0,1fr); } }
+  .purchase-options {
+    margin-block-start: 20px;
+    scroll-margin-block-start: 24px;
+  }
+  .purchase-options dl { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px 24px; margin: 0; }
+  .purchase-options dt { margin-block-end: 4px; }
+  .purchase-options dd { white-space: normal; font-size: 1.125rem; font-variant-numeric: tabular-nums; }
+  .purchase-options .purchase-price {
+    color: var(--color-accent);
+    font-size: clamp(1.625rem, 2.3vw, 2.125rem);
+    line-height: 1.12;
+    font-weight: 800;
+  }
+  .purchase-options .payment-detail { color: #cbd5ce; font-size: .75rem; font-weight: 400; }
+
 </style>
 
 
