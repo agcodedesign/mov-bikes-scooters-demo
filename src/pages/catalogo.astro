@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
+import { n7Offer } from '../data/sy-n7';
+import { v8Offer } from '../data/v8-offer';
 import Dialogs from '../components/layout/Dialogs.astro';
 const products=[
  {id:'v8',name:'V8 Pro S',type:'Bicicleta elétrica',category:'bicicleta',image:'/images/products/mov-v8-pro-s-frontal-1280.webp',alt:'Farol circular e roda dianteira da bicicleta elétrica V8 Pro S',href:'/produtos/v8-pro-s/',description:'Bicicleta elétrica com pneus 20 × 4,0, duas baterias removíveis e motor de 1.000 W.'},
@@ -9,7 +11,7 @@ const products=[
 ];
 ---
 <BaseLayout title="Catálogo | MOV Bikes & Scooters" description="Conheça bicicletas e scooters elétricas MOV e encontre o modelo para a sua rotina." homeMotion={false}>
-<Header/><main id="conteudo" class="catalog-page"><section class="catalog-hero"><div class="catalog-wrap"><p class="eyebrow">Bikes & scooters elétricas</p><h1>Bicicletas e scooters elétricas.</h1><p class="lead">Conheça a V8 Pro S e a San Yang N7. Veja as fotos e as especificações de cada modelo.</p><a class="scroll-link" href="#modelos">Ver modelos <span aria-hidden="true">↓</span></a><img class="hero-mark" src="/images/brand/mov-logo-simbolo.webp" width="871" height="283" alt="" aria-hidden="true" decoding="async" /></div></section><section class="catalog-list" id="modelos" aria-labelledby="models-title"><div class="catalog-wrap"><div class="section-head"><div><p class="eyebrow">A vitrine MOV</p><h2 id="models-title">Modelos para conhecer.</h2></div><p>Veja as fotos, explore os detalhes e fale com a equipe para confirmar a configuração disponível.</p></div><div class="filters" role="group" aria-label="Filtrar modelos por categoria">{[['todos','Todos'],['bicicleta','Bicicletas'],['scooter','Scooters']].map(([value,label],i)=><button type="button" data-filter={value} aria-pressed={i===0?'true':'false'}>{label}</button>)}</div><p class="result-count" role="status" aria-live="polite">2 modelos</p><div class="catalog-grid">{products.map((product,index)=><article class="product-card" data-category={product.category} style={`--card-index:${index}`}><a class="card-image" href={product.href} aria-label={`Conhecer ${product.name}`}><img src={product.image} alt={product.alt} loading={index===0?'eager':'lazy'} /><span class="image-arrow" aria-hidden="true">↗</span></a><div class="card-copy"><p class="product-type">{product.type}</p><h3>{product.name}</h3><p>{product.description}</p><a class="card-link" href={product.href}>Conhecer {product.name} <span aria-hidden="true">→</span></a></div></article>)}</div><p class="empty-state" hidden>Nenhum modelo nesta categoria. <button type="button" data-filter="todos">Ver todos os modelos</button></p></div></section></main><Footer/><Dialogs/>
+<Header/><main id="conteudo" class="catalog-page"><section class="catalog-hero"><div class="catalog-wrap"><p class="eyebrow">Bikes & scooters elétricas</p><h1>Bicicletas e scooters elétricas.</h1><p class="lead">Conheça a V8 Pro S e a San Yang N7. Veja as fotos e as especificações de cada modelo.</p><a class="scroll-link" href="#modelos">Ver modelos <span aria-hidden="true">↓</span></a><img class="hero-mark" src="/images/brand/mov-logo-simbolo.webp" width="871" height="283" alt="" aria-hidden="true" decoding="async" /></div></section><section class="catalog-list" id="modelos" aria-labelledby="models-title"><div class="catalog-wrap"><div class="section-head"><div><p class="eyebrow">A vitrine MOV</p><h2 id="models-title">Modelos para conhecer.</h2></div><p>Veja as fotos, explore os detalhes e fale com a equipe para confirmar a configuração disponível.</p></div><div class="filters" role="group" aria-label="Filtrar modelos por categoria">{[['todos','Todos'],['bicicleta','Bicicletas'],['scooter','Scooters']].map(([value,label],i)=><button type="button" data-filter={value} aria-pressed={i===0?'true':'false'}>{label}</button>)}</div><p class="result-count" role="status" aria-live="polite">2 modelos</p><div class="catalog-grid">{products.map((product,index)=><article class="product-card" data-category={product.category} style={`--card-index:${index}`}><a class="card-image" href={product.href} aria-label={`Conhecer ${product.name}`}><img src={product.image} alt={product.alt} loading={index===0?'eager':'lazy'} /><span class="image-arrow" aria-hidden="true">↗</span></a><div class="card-copy"><p class="product-type">{product.type}</p><h3>{product.name}</h3><p>{product.description}</p><a class="card-link" href={product.href + '#comprar'}>{product.id === 'v8' ? v8Offer.price + ' | Ver oferta' : n7Offer.price + ' | Ver oferta'} <span aria-hidden="true">→</span></a></div></article>)}</div><p class="empty-state" hidden>Nenhum modelo nesta categoria. <button type="button" data-filter="todos">Ver todos os modelos</button></p></div></section></main><Footer/><Dialogs/>
 </BaseLayout>
 <script>
 const buttons=[...document.querySelectorAll<HTMLButtonElement>('.filters [data-filter]')];const cards=[...document.querySelectorAll<HTMLElement>('.product-card')];const count=document.querySelector<HTMLElement>('.result-count')!;const empty=document.querySelector<HTMLElement>('.empty-state')!;
@@ -58,4 +60,17 @@ if(category==='bicicleta'||category==='scooter')buttons.find(button=>button.data
 .card-image { aspect-ratio:1.85; }
 .product-card[data-category="scooter"] .card-image img { object-fit:contain; }
 @media(max-width:700px) { .catalog-hero .catalog-wrap { padding-block:44px 56px; } .hero-mark { width:75%; top:auto; bottom:12px; transform:none; right:-8%; opacity:.04; } .card-copy { padding:24px; min-height:230px; } .card-image { aspect-ratio:1.5; } }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .section-head, .filters, .card-copy {
+        animation: reveal-content linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 65%;
+      }
+    }
+  }
+  @keyframes reveal-content {
+    from { opacity: .35; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 </style>

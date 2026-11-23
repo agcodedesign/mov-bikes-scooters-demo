@@ -6,6 +6,7 @@ import Dialogs from '../../components/layout/Dialogs.astro';
 import Button from '../../components/ui/Button.astro';
 import ResponsiveImage from '../../components/ui/ResponsiveImage.astro';
 import { productParts, productSpecs, productSource, comparisonSource, lightingSource, partLabels, productPhotos } from '../../data/sy-n7';
+import { n7Offer } from '../../data/sy-n7';
 import { site } from '../../config/site';
 const filmTimes=[0,3.1,6.8,7.8,9.2,9.94];
 const photoWidths=[640,960,1280,1920];
@@ -49,6 +50,24 @@ const photoWidths=[640,960,1280,1920];
         <div class="photo-grid"><figure><ResponsiveImage src={`/images/products/n7/${productPhotos[1].name}`} widths={photoWidths} width={productPhotos[1].width} height={productPhotos[1].height} alt={productPhotos[1].alt} sizes="(max-width: 767px) 90vw, 50vw" /><figcaption>{productPhotos[1].caption}</figcaption></figure><div>{productPhotos.slice(2).map(photo=><figure><ResponsiveImage src={`/images/products/n7/${photo.name}`} widths={photoWidths} width={photo.width} height={photo.height} alt={photo.alt} sizes="(max-width: 767px) 90vw, 45vw" /><figcaption>{photo.caption}</figcaption></figure>)}</div></div>
       </div>
     </section>
+    </section>
+    <section class="purchase container" id="comprar" aria-labelledby="purchase-title">
+      <div>
+        <p class="eyebrow">Preço e garantia</p>
+        <h2 id="purchase-title">{n7Offer.model}</h2>
+        <p>Confirme a disponibilidade e as formas de pagamento com a MOV.</p>
+      </div>
+      <div class="purchase-options">
+        <dl>
+          <div><dt>Preço</dt><dd>{n7Offer.price}</dd></div>
+          <div><dt>Garantia</dt><dd>6 meses</dd><dd class="payment-detail">Motor, bateria e módulo</dd></div>
+        </dl>
+        {site.whatsapp ? (
+          <Button href={site.whatsapp + '?text=' + encodeURIComponent(n7Offer.message)}>Comprar pelo WhatsApp <span aria-hidden="true">&#8594;</span></Button>
+        ) : (
+          <p class="payment-detail">WhatsApp de vendas indisponível no momento.</p>
+        )}
+      </div>
     </section>
     <section class="product-specs container" id="especificacoes" aria-labelledby="specs-title"><div><p class="eyebrow">Conheça o conjunto</p><h2 id="specs-title">Os detalhes<br />também contam.</h2><p>Uma referência da San Yang N7 a partir das especificações anunciadas por revendedores. A MOV pode confirmar a configuração da unidade disponível.</p></div><div><table><caption class="sr-only">Ficha de especificações anunciadas para a San Yang N7</caption><tbody>{productSpecs.map(([label,value]) => <tr><th scope="row">{label}</th><td>{value}</td></tr>)}</tbody></table><p class="specs-source">Fontes: <a href={productSource} target="_blank" rel="noopener noreferrer">R1 Elétricos ↗</a>, <a href={comparisonSource} target="_blank" rel="noopener noreferrer">Marca FCF ↗</a> e <a href={lightingSource} target="_blank" rel="noopener noreferrer">Eletron Motos &amp; Bike ↗</a>. Consultadas em 17/11/2026. Potência, velocidade e autonomia são dados publicados pelos revendedores; confirme a versão, a capacidade da bateria e os acessórios que acompanham a unidade com a MOV.</p></div></section>
     <section class="product-faq container" aria-labelledby="faq-title"><h2 id="faq-title">Antes do próximo caminho.</h2><div>
@@ -354,6 +373,27 @@ const photoWidths=[640,960,1280,1920];
   @media (max-width: 767px) {
     .product-copy { padding-block-end: calc(100svh + 16px); }
   }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .product-photos > .container, .purchase, .product-specs, .product-faq, .product-final > .container {
+        animation: reveal-content linear both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 65%;
+      }
+    }
+  }
+  @keyframes reveal-content {
+    from { opacity: .35; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .purchase { display:grid; grid-template-columns:1fr 1fr; align-items:start; gap:clamp(24px,5vw,72px); margin-block-start:clamp(40px,7vw,100px); padding:clamp(24px,4vw,56px); border:1px solid #ffffff24; border-radius:24px; background:#18241e; }
+  .purchase .eyebrow { color:var(--color-accent); }
+  .purchase h2 { margin-block:12px; }
+  .purchase p,.purchase .payment-detail { color:#cbd5ce; }
+  .purchase-options dl { display:flex; flex-wrap:wrap; gap:24px 40px; margin:0 0 24px; }
+  .purchase-options dd { white-space:normal; font-variant-numeric:tabular-nums; }
+  .purchase-options .payment-detail { font-size:.875rem; font-weight:400; }
+  @media(max-width:767px) { .purchase { grid-template-columns:minmax(0,1fr); } }
 </style>
 
 

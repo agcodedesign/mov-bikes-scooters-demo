@@ -68,3 +68,7 @@ export const productPhotos = [
   { name: 'painel', alt: 'Painel digital, guidão e comandos da San Yang N7', caption: 'O cockpit, visto de perto.', width: 2000, height: 1116 },
   { name: 'traseira', alt: 'Assento e acabamento traseiro da San Yang N7', caption: 'Linhas que completam o perfil.', width: 2000, height: 1116 },
 ];
+
+const model = 'Scooter Elétrica N7 de 1.000 W';
+const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(7900);
+export const n7Offer = { model, price, message: `Olá! Quero comprar a ${model}, anunciada por ${price}. Podem confirmar a disponibilidade e as formas de pagamento?` };
